@@ -50,7 +50,7 @@ public class Game extends JPanel implements ActionListener {
     }
 
     public void loadImages(){
-        ImageIcon appleIcon = new ImageIcon("pics/save.png");
+        ImageIcon appleIcon = new ImageIcon("pics/apple.png");
         apple = appleIcon.getImage();
         ImageIcon dotIcon = new ImageIcon("pics/dark.png");
         dot = dotIcon.getImage();
