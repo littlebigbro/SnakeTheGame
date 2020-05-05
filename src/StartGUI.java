@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class StartGUI {
     private static void createAndShowGUI() {
@@ -8,15 +10,14 @@ public class StartGUI {
         frame.setPreferredSize(new Dimension(500,500));
         frame.add(new GamePanel());
         frame.addKeyListener(new ExitAction());
-        frame.setFocusable(true);
+       //frame.setFocusable(true);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-
-
     }
+
 
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:

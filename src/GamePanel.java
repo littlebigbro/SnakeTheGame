@@ -1,39 +1,45 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements ActionListener {
     private final static int SIZE = 360;
-    private Snake snake = new Snake();
-    private final int SEGMENT_SIZE = 10;
-    private Image segment;
-    private Image apple;
-    private int[] x = new int[SIZE * SEGMENT_SIZE];
-    private int[] y = new int[SIZE * SEGMENT_SIZE];
+    private Snake snake = new Snake(); //если сделать публичным то можно наследовать, например для метода который проверяет на столкновения
+    private GreenApple greenApple = new GreenApple();
+    private Image segmentIm;
+    private Image appleIm;
+    private Timer timer;
+    private final String RIGHT = "right";
+    private final String LEFT = "left";
+    private final String UP = "up";
+    private final String DOWN = "down";
+    private final String STOP = "stop";
+    private String moveDirection = RIGHT;
 
     public GamePanel(){
         setPreferredSize(new Dimension(SIZE,SIZE));
         setBackground(Color.DARK_GRAY);
         loadImages();
-        int snakeSize = snake.getSize();
-        for (int i = 0; i < snakeSize; i++){
-            x[i] = 40 - i * SEGMENT_SIZE;
-            y[i] = 30;
-        }
-        //initGame();
+//        initGame();
+        timer = new Timer(300,this);
+        timer.start();
+        snake.draw();
         addKeyListener(new FieldKeyListener());
-        //setFocusable(true);
+
+        setFocusable(true);
     }
 
-    //не нравится, надо переделать
+    public void loadImages(){
+        appleIm = greenApple.icon();
+        segmentIm = snake.icon();
+    }
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(true){
-            //g.drawImage(apple,appleX,appleY,this);
-            for (int i = 0; i < snake.getSize(); i++){
-                g.drawImage(segment,x[i],y[i], this);
+            g.drawImage(appleIm,greenApple.getX(),greenApple.getY(),this);
+            for (int i = 0; i < snake.getSnakeSize(); i++){
+                g.drawImage(segmentIm,snake.getX().get(i),snake.getY().get(i), this);
             }
         } else{
             String str = "Game Over";
@@ -44,37 +50,34 @@ public class GamePanel extends JPanel {
         }
     }
 
-    //не нравится, надо переделать
-    public void loadImages(){
-        ImageIcon appleIcon = new ImageIcon("pics/apple.png");
-        apple = appleIcon.getImage();
-        ImageIcon dotIcon = new ImageIcon("pics/dark.png");
-        segment = dotIcon.getImage();
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (true){
+            //checkApple();
+            snake.move(moveDirection);
+           // checkCollisions();
+        }
+        repaint();
     }
-
-//    @Override
-//    public void actionPerformed(ActionEvent e) {
-//        if (inGame){
-//            checkApple();
-//            move();
-//            checkCollisions();
-//        }
-//        repaint();
-//    }
     class FieldKeyListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            if(e.getKeyCode() == KeyEvent.VK_LEFT){
-                snake.move("left");
+            //добавить задержку на передачу равную времени необходимому для ячейки для перемещения
+            //проверка на направление движение
+            if(e.getKeyCode() == KeyEvent.VK_LEFT && moveDirection != RIGHT){
+                moveDirection = LEFT;
             }
-            if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-                snake.move("right");
+            if(e.getKeyCode() == KeyEvent.VK_RIGHT&& moveDirection != LEFT){
+                moveDirection = RIGHT;
             }
-            if(e.getKeyCode() == KeyEvent.VK_UP){
-                snake.move("up");
+            if(e.getKeyCode() == KeyEvent.VK_UP&& moveDirection != DOWN){
+                moveDirection = UP;
             }
-            if(e.getKeyCode() == KeyEvent.VK_DOWN){
-                snake.move("down");
+            if(e.getKeyCode() == KeyEvent.VK_DOWN && moveDirection != UP){
+                moveDirection = DOWN;
+            }
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                moveDirection = STOP;
             }
         }
     }
