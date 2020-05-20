@@ -8,7 +8,9 @@ import java.awt.event.KeyListener;
 public class PauseMenu extends JPanel implements ActionListener, KeyListener {
 
     public PauseMenu(){
+       // setPreferredSize(new Dimension(1,1));
         setBackground(Color.YELLOW);
+
     }
 
     @Override
@@ -22,7 +24,6 @@ public class PauseMenu extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-            new NewGame();
         }
     }
 

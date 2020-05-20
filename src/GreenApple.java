@@ -4,12 +4,13 @@ import java.awt.*;
 public class GreenApple extends Apples {
 
     public GreenApple(){
-        appleX = 50;
-        appleY = 100;
+        appleSize = 10;
+        setScore(10);
     }
 
     public Image icon(){
-        appleIcon = new ImageIcon("pics/apple.png");
+        appleIcon = new ImageIcon("pics/greenapple.png");
         return appleIcon.getImage();
     }
+
 }

@@ -14,16 +14,20 @@ public class GamePanel extends JPanel implements ActionListener {
     private final String UP = "up";
     private final String DOWN = "down";
     private final String STOP = "stop";
-    private String moveDirection = RIGHT;
+    private String currentDirection = "right";
+    private boolean escPressed = false;
 
     public GamePanel(){
         setPreferredSize(new Dimension(SIZE,SIZE));
-        setBackground(Color.DARK_GRAY);
+        setBackground(Color.BLACK);
         loadImages();
 //        initGame();
-        timer = new Timer(300,this);
+        timer = new Timer(250,this);
         timer.start();
+        greenApple.create(snake.getPoints());
+        snake.setDirection(currentDirection);
         snake.draw();
+
         addKeyListener(new FieldKeyListener());
 
         setFocusable(true);
@@ -34,15 +38,31 @@ public class GamePanel extends JPanel implements ActionListener {
         segmentIm = snake.icon();
     }
 
+    public void checkApple(){
+        if((int) snake.getPoints().get(0).getX() == greenApple.getX() && (int) snake.getPoints().get(0).getY() == greenApple.getY()){
+            int snakeSize = snake.getSnakeSize();
+            snakeSize++;
+            snake.setSnakeSize(snakeSize);
+            greenApple.create(snake.getPoints());
+        }
+    }
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if(true){
             g.drawImage(appleIm,greenApple.getX(),greenApple.getY(),this);
             for (int i = 0; i < snake.getSnakeSize(); i++){
-                g.drawImage(segmentIm,snake.getX().get(i),snake.getY().get(i), this);
+                g.drawImage(segmentIm, (int) snake.getPoints().get(i).getX(), (int) snake.getPoints().get(i).getY(),this);
             }
         } else{
             String str = "Game Over";
+            Font f = new Font("Arial",Font.BOLD, 14);
+            g.setColor(Color.white);
+            g.setFont(f);
+            g.drawString(str, SIZE/2-50,SIZE/2);
+        }
+        if (snake.getDirection().equals(STOP)){
+            String str = "Pause";
             Font f = new Font("Arial",Font.BOLD, 14);
             g.setColor(Color.white);
             g.setFont(f);
@@ -52,10 +72,10 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (true){
-            //checkApple();
-            snake.move(moveDirection);
-           // checkCollisions();
+        if (!snake.getDirection().equals(STOP)){
+            checkApple();
+            snake.move();
+//           // checkCollisions();
         }
         repaint();
     }
@@ -63,21 +83,28 @@ public class GamePanel extends JPanel implements ActionListener {
         @Override
         public void keyPressed(KeyEvent e) {
             //добавить задержку на передачу равную времени необходимому для ячейки для перемещения
-            //проверка на направление движение
-            if(e.getKeyCode() == KeyEvent.VK_LEFT && moveDirection != RIGHT){
-                moveDirection = LEFT;
+            //мб проверять координаты на изменение если dX dY = 0 то нельзя нажать
+            if(e.getKeyCode() == KeyEvent.VK_LEFT && !snake.getDirection().equals(RIGHT) && !escPressed){
+                snake.setDirection(LEFT);
             }
-            if(e.getKeyCode() == KeyEvent.VK_RIGHT&& moveDirection != LEFT){
-                moveDirection = RIGHT;
+            if(e.getKeyCode() == KeyEvent.VK_RIGHT&& !snake.getDirection().equals(LEFT) && !escPressed){
+                snake.setDirection(RIGHT);
             }
-            if(e.getKeyCode() == KeyEvent.VK_UP&& moveDirection != DOWN){
-                moveDirection = UP;
+            if(e.getKeyCode() == KeyEvent.VK_UP&& !snake.getDirection().equals(DOWN) && !escPressed){
+                snake.setDirection(UP);
             }
-            if(e.getKeyCode() == KeyEvent.VK_DOWN && moveDirection != UP){
-                moveDirection = DOWN;
+            if(e.getKeyCode() == KeyEvent.VK_DOWN && !snake.getDirection().equals(UP) && !escPressed){
+                snake.setDirection(DOWN);
             }
             if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-                moveDirection = STOP;
+                if(escPressed){
+                    snake.setDirection(currentDirection);
+                    escPressed = false;
+                }else{
+                    currentDirection = snake.getDirection();
+                    snake.setDirection(STOP);
+                    escPressed = true;
+                }
             }
         }
     }
