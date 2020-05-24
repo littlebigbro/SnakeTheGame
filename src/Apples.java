@@ -3,7 +3,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Apples {
+public class Apples {
     // так же надо реализовать время жизни
     // метод создания яблок
     // метод вычисления счета.
@@ -11,7 +11,7 @@ public abstract class Apples {
     // переписать под точку
 
     public ImageIcon appleIcon;
-    public int appleSize;
+    private int appleSize = 10;
     private int score;
     private Point applePoint = new Point();
     public Image icon(){
@@ -23,20 +23,16 @@ public abstract class Apples {
         return (int)applePoint.getY();
     }
 
-    public void create(){
-        int appleX = new Random().nextInt(35) * appleSize;
-        int appleY = new Random().nextInt(35) * appleSize;
-        applePoint.setLocation(appleX,appleY);
-    }
     public void create(ArrayList<Point> restrictionList){
-        //зарефакторить (не брать точки при создании со значениями из листа)
-        int appleX = new Random().nextInt(35) * appleSize;
-        int appleY = new Random().nextInt(35) * appleSize;
-        applePoint.setLocation(appleX,appleY);
-        while (restrictionList.contains(applePoint)){
+        int appleX;
+        int appleY;
+        while (true){
             appleX = new Random().nextInt(35) * appleSize;
             appleY = new Random().nextInt(35) * appleSize;
             applePoint.setLocation(appleX,appleY);
+            if (restrictionList.contains(applePoint)){
+                continue;
+            } else { break;}
         }
     }
     public int getScore(){

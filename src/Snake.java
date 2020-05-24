@@ -4,19 +4,23 @@ import java.util.ArrayList;
 
 
 public class Snake {
-    // при поедании яблока добавлять ещё одно значение в оба листа
     private final int SEGMENT_SIZE = 10;
-    private int snakeSize = 3;
+    private int snakeSize = 5;
     private String snakeDirection = "stop";
     private ImageIcon segmentIcon;
-
+    private ImageIcon snakeHeadIcon;
     private Point point;
     private ArrayList<Point> points = new ArrayList<>();
-
+    private boolean moved;
 
     public Image icon(){
         segmentIcon = new ImageIcon("pics/snake.png");
         return segmentIcon.getImage();
+    }
+
+    public Image head(){
+        snakeHeadIcon = new ImageIcon("pics/snakeHead.png");
+        return snakeHeadIcon.getImage();
     }
 
     public int getSnakeSize(){
@@ -24,11 +28,19 @@ public class Snake {
     }
 
     public void setSnakeSize(int size){
-        if (size > 0){
-            point = new Point();
-            point.setLocation(points.get(snakeSize - 1));
+        if (size > 2){
+            if(size > snakeSize) {
+                for (int i = snakeSize - 1; i < size; i++){
+                    point = new Point();
+                    point.setLocation(points.get(i));
+                    points.add(i, point);
+                }
+            } else {
+                for(int i = snakeSize - 1 ; i >= size ; i-- ){
+                    points.remove(i);
+                }
+            }
             snakeSize = size;
-            points.add(snakeSize - 1,point);
         }
     }
 
@@ -48,6 +60,21 @@ public class Snake {
     }
     public ArrayList<Point> getPoints(){return points;}
 
+    public int getPointX(int Key){
+        return (int) points.get(Key).getX();
+    }
+
+    public int getPointY(int Key){
+        return (int) points.get(Key).getY();
+    }
+
+    public void setMoved(boolean isMoved){
+        moved = isMoved;
+    }
+    public boolean getMoved(){
+        return moved;
+    }
+
     public void move(){
         for (int i = snakeSize - 1; i > 0; i--){
             points.get(i).move((int) points.get(i-1).getX(),(int) points.get(i-1).getY());
@@ -65,7 +92,6 @@ public class Snake {
         if(snakeDirection.equals("down")){
             points.get(0).translate(0, SEGMENT_SIZE);
         }
-        if(snakeDirection.equals("stop")){
-        }
+        moved = true;
     }
 }
