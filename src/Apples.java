@@ -5,22 +5,14 @@ import java.util.Random;
 
 public class Apples {
     // так же надо реализовать время жизни
-    // метод создания яблок
-    // метод вычисления счета.
-    // метод проверки при столкновении
-    // переписать под точку
-
     public ImageIcon appleIcon;
     private int appleSize = 10;
     private int score;
+    private boolean isExist;
     private Point applePoint = new Point();
+
     public Image icon(){
         return appleIcon.getImage();
-    }
-
-    public int getX() { return (int)applePoint.getX(); }
-    public int getY() {
-        return (int)applePoint.getY();
     }
 
     public void create(ArrayList<Point> restrictionList){
@@ -34,11 +26,27 @@ public class Apples {
                 continue;
             } else { break;}
         }
+        isExist = true;
     }
+
+    public int getX() { return (int)applePoint.getX(); }
+    public int getY() {
+        return (int)applePoint.getY();
+    }
+
     public int getScore(){
         return score;
     }
+
     public void setScore(int dScore){
         score = dScore;
+    }
+
+    public void delete(){
+        isExist = false;
+    }
+
+    public boolean isExist(){
+        return isExist;
     }
 }

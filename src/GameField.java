@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class GamePanel extends JPanel implements ActionListener {
+public class GameField extends JPanel implements ActionListener {
     private final static int SIZE = 360;
     private Snake snake;
     private int snakeHeadX;
@@ -23,8 +23,10 @@ public class GamePanel extends JPanel implements ActionListener {
     private boolean escPressed = false;
     private int gameScore;
     private boolean inGame = true;
+    private GameCube redCube;
+    private GameCube yellowCube;
 
-    public GamePanel(){
+    public GameField(){
         setPreferredSize(new Dimension(SIZE,SIZE));
         setBackground(Color.BLACK);
         loadGameObjects();
@@ -32,6 +34,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
         gameScore = 0;
         addKeyListener(new FieldKeyListener());
+        requestFocus();
         setFocusable(true);
     }
 
@@ -49,12 +52,21 @@ public class GamePanel extends JPanel implements ActionListener {
         redApple.setScore(100);
         redApple.appleIcon = new ImageIcon("pics/redapple.png");
 
+        redCube = new GameCube();
+        redCube.setChance(40);
+
         yellowApple = new Apples();
         yellowApple.setScore(-50);
         yellowApple.appleIcon = new ImageIcon("pics/yellowapple.png");
+
+        yellowCube = new GameCube();
+        yellowCube.setChance(60);
+
         loadImages();
     }
 
+
+//игровое поле сделать песком
     private void loadImages(){
         greenAppleIm = greenApple.icon();
         redAppleIm = redApple.icon();
@@ -63,8 +75,8 @@ public class GamePanel extends JPanel implements ActionListener {
         snakeHeadIm = snake.head();
     }
 
-    public int getGameScore(){
-        return gameScore;
+    public String getGameScore(){
+        return Integer.toString(gameScore);
     }
 
     private void checkApple(){
@@ -73,10 +85,26 @@ public class GamePanel extends JPanel implements ActionListener {
             snakeSize++;
             snake.setSnakeSize((int)snakeSize);
             gameScore += greenApple.getScore();
+            greenApple.delete();
             greenApple.create(snake.getPoints());
-            if (snakeSize > 5){
-                redApple.create(snake.getPoints());
+
+            if (snake.getSnakeSize()%2 == 0 && !redApple.isExist()){
+                if ( redCube.shot() > 5) {
+                    redApple.create(snake.getPoints());
+                    redCube.setAddThrow(false);
+                } else {
+                    if (redCube.getAddThrow() && redCube.shot() > 5) {
+                        redApple.create(snake.getPoints());
+                        redCube.setAddThrow(false);
+                    } else {
+                        redCube.setAddThrow(true);
+                    }
+                }
             }
+        }
+        //переписать
+        if (snakeSize > 3 && !yellowApple.isExist()){
+            yellowApple.create(snake.getPoints());
         }
         if (snakeHeadX == redApple.getX() && snakeHeadY == redApple.getY()){
             if (snakeSize / 2 >= 3){
@@ -84,11 +112,13 @@ public class GamePanel extends JPanel implements ActionListener {
             }
             snake.setSnakeSize((int) Math.ceil(snakeSize));
             gameScore += redApple.getScore();
+            redApple.delete();
         }
         if (snakeHeadX == yellowApple.getX() && snakeHeadY == yellowApple.getY()){
-            snakeSize++;
+            snakeSize = snakeSize * 2;
             snake.setSnakeSize((int)snakeSize);
             gameScore += yellowApple.getScore();
+            yellowApple.delete();
         }
     }
 
@@ -117,9 +147,13 @@ public class GamePanel extends JPanel implements ActionListener {
                 g.drawString(str, SIZE/2-50,SIZE/2);
             } else {
                 g.drawImage(greenAppleIm, greenApple.getX(), greenApple.getY(), this);
-                if (snake.getSnakeSize() > 5){
-                g.drawImage(redAppleIm, redApple.getX(), redApple.getY(), this);
-                g.drawImage(yellowAppleIm, yellowApple.getX(), yellowApple.getY(), this); }
+                if (redApple.isExist()){
+                    g.drawImage(redAppleIm, redApple.getX(), redApple.getY(), this);
+
+                }
+                if (yellowApple.isExist()){
+                    g.drawImage(yellowAppleIm, yellowApple.getX(), yellowApple.getY(), this);
+                }
                 g.drawImage(snakeHeadIm, snake.getPointX(0), snake.getPointY(0), this);
                 for (int i = 1; i < snake.getSnakeSize(); i++) {
                     g.drawImage(segmentIm, snake.getPointX(i), snake.getPointY(i), this);
@@ -143,6 +177,8 @@ public class GamePanel extends JPanel implements ActionListener {
             snakeHeadY= snake.getPointY(0);
             checkApple();
             switch(snake.getSnakeSize()){
+                //переделать не работает как надо(если не конкретное значение то скорость не меняется)
+                // + задержку сделать процентами от времени
                 case 8: timer.setDelay(300);
                     break;
                 case 13: timer.setDelay(250);
@@ -154,6 +190,8 @@ public class GamePanel extends JPanel implements ActionListener {
                 case 28: timer.setDelay(100);
                     break;
                 case 33: timer.setDelay(75);
+                    break;
+                case 38: timer.setDelay(25);
                     break;
             }
             checkCollisions();

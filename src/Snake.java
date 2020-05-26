@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Snake {
     private final int SEGMENT_SIZE = 10;
-    private int snakeSize = 5;
+    private int snakeSize = 3;
     private String snakeDirection = "stop";
     private ImageIcon segmentIcon;
     private ImageIcon snakeHeadIcon;
@@ -28,7 +28,7 @@ public class Snake {
     }
 
     public void setSnakeSize(int size){
-        if (size > 2){
+        if (size >= 3){
             if(size > snakeSize) {
                 for (int i = snakeSize - 1; i < size; i++){
                     point = new Point();
@@ -36,7 +36,7 @@ public class Snake {
                     points.add(i, point);
                 }
             } else {
-                for(int i = snakeSize - 1 ; i >= size ; i-- ){
+                for (int i = snakeSize - 1 ; i >= size ; i-- ){
                     points.remove(i);
                 }
             }
@@ -47,23 +47,15 @@ public class Snake {
     public String getDirection(){
         return snakeDirection;
     }
-
     public void setDirection(String direction){
         snakeDirection = direction;
     }
-    public void draw(){
-        for (int i = 0; i < snakeSize; i++){
-            point = new Point();
-            point.setLocation(40 - i * SEGMENT_SIZE, 30);
-            points.add(i, point);
-        }
-    }
+
     public ArrayList<Point> getPoints(){return points;}
 
     public int getPointX(int Key){
         return (int) points.get(Key).getX();
     }
-
     public int getPointY(int Key){
         return (int) points.get(Key).getY();
     }
@@ -73,6 +65,14 @@ public class Snake {
     }
     public boolean getMoved(){
         return moved;
+    }
+
+    public void draw(){
+        for (int i = 0; i < snakeSize; i++){
+            point = new Point();
+            point.setLocation(40 - i * SEGMENT_SIZE, 30);
+            points.add(i, point);
+        }
     }
 
     public void move(){
