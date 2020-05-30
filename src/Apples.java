@@ -15,12 +15,12 @@ public class Apples {
         return appleIcon.getImage();
     }
 
-    public void create(ArrayList<Point> restrictionList){
+    public void create(int fieldX, int fieldY, ArrayList<Point> restrictionList){
         int appleX;
         int appleY;
         while (true){
-            appleX = new Random().nextInt(35) * appleSize;
-            appleY = new Random().nextInt(35) * appleSize;
+            appleX = new Random().nextInt(fieldX/10 - 1) * appleSize;
+            appleY = new Random().nextInt(fieldY/10 - 1) * appleSize;
             applePoint.setLocation(appleX,appleY);
             if (restrictionList.contains(applePoint)){
                 continue;
@@ -48,5 +48,10 @@ public class Apples {
 
     public boolean isExist(){
         return isExist;
+    }
+
+    public int timeOfLife(){
+        int time=0;
+        return time;
     }
 }
