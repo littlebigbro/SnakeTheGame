@@ -2,24 +2,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-
 public class Snake {
     private final int SEGMENT_SIZE = 10;
     private int snakeSize = 3;
     private String snakeDirection = "stop";
-    private ImageIcon segmentIcon;
-    private ImageIcon snakeHeadIcon;
     private Point point;
-    private ArrayList<Point> points = new ArrayList<>();
+    final private ArrayList<Point> points = new ArrayList<>();
     private boolean moved;
 
     public Image icon(){
-        segmentIcon = new ImageIcon("pics/snake.png");
+        ImageIcon segmentIcon = new ImageIcon("pics/snake.png");
         return segmentIcon.getImage();
     }
 
     public Image head(){
-        snakeHeadIcon = new ImageIcon("pics/snakeHead.png");
+        ImageIcon snakeHeadIcon = new ImageIcon("pics/snakeHead.png");
         return snakeHeadIcon.getImage();
     }
 
@@ -36,9 +33,7 @@ public class Snake {
                     points.add(i, point);
                 }
             } else {
-                for (int i = snakeSize - 1 ; i >= size ; i-- ){
-                    points.remove(i);
-                }
+                points.subList(size, snakeSize).clear();
             }
             snakeSize = size;
         }

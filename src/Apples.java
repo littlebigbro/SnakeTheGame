@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Apples {
-    // так же надо реализовать время жизни
     public ImageIcon appleIcon;
-    private int appleSize = 10;
+    final private int appleSize = 10;
     private int score;
     private boolean isExist;
-    private Point applePoint = new Point();
+    final private Point applePoint = new Point();
+    private int timeOfExist = 0;
 
     public Image icon(){
         return appleIcon.getImage();
@@ -22,11 +22,15 @@ public class Apples {
             appleX = new Random().nextInt(fieldX/10 - 1) * appleSize;
             appleY = new Random().nextInt(fieldY/10 - 1) * appleSize;
             applePoint.setLocation(appleX,appleY);
-            if (restrictionList.contains(applePoint)){
-                continue;
-            } else { break;}
+            if (!restrictionList.contains(applePoint)){
+                break;
+            }
         }
         isExist = true;
+    }
+
+    public void create(int x, int y){
+        applePoint.setLocation(x,y);
     }
 
     public int getX() { return (int)applePoint.getX(); }
@@ -43,15 +47,19 @@ public class Apples {
     }
 
     public void delete(){
+        // так как нельзя удалить созданную точку, переписываю её координаты на недоступные в данном игровом поле
         isExist = false;
+        applePoint.setLocation(-3,0);
+    }
+    public void setTimeOfExist(int time){
+        timeOfExist = time;
+    }
+
+    public int getTimeOfExist(){
+        return timeOfExist;
     }
 
     public boolean isExist(){
         return isExist;
-    }
-
-    public int timeOfLife(){
-        int time=0;
-        return time;
     }
 }

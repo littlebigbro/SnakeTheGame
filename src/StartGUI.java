@@ -1,40 +1,61 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
-public class StartGUI implements ActionListener {
-    JButton nGame;
-    JButton B1;
+public class StartGUI {
+    JButton nGameButton;
+    JButton pauseButton;
+    JButton restartButton;
+    JButton rulesButton;
+    JButton exitButton;
     JPanel gamePanel;
-    JLabel label;
+    GameField newGame;
+
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Snake");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(376,499));
         frame.setLayout(new BorderLayout());
         gamePanel = new JPanel();
-        gamePanel.setPreferredSize(new Dimension(360,360));
-
+        gamePanel.setPreferredSize(new Dimension(300,306));
 
         JPanel menuPanel = new JPanel();
         menuPanel.setPreferredSize(new Dimension(500,100));
-        nGame = new JButton("Новая игра");
-        nGame.setPreferredSize(new Dimension(100, 50));
-        nGame.addActionListener(this);
-        B1 = new JButton("B1");
-        B1.setPreferredSize(new Dimension(100, 50));
-        B1.addActionListener(this);
-        menuPanel.add(B1);
-        B1.setVisible(false);
-        label = new JLabel();
-        menuPanel.add(nGame);
-        menuPanel.add(label);
-        menuPanel.setVisible(true);
+        nGameButton = new JButton("New Game");
+        nGameButton.setPreferredSize(new Dimension(100, 50));
+        nGameButton.addActionListener(new NewGameListener());
+        menuPanel.add(nGameButton);
+        nGameButton.setVisible(true);
+
+        pauseButton = new JButton("Pause");
+        pauseButton.setPreferredSize(new Dimension(100, 50));
+        pauseButton.addActionListener(new PauseListener());
+        menuPanel.add(pauseButton);
+        pauseButton.setVisible(false);
+
+        restartButton = new JButton("Restart");
+        restartButton.setPreferredSize(new Dimension(100, 50));
+        restartButton.addActionListener(new RestartListener());
+        menuPanel.add(restartButton);
+        restartButton.setVisible(false);
+
+
+        rulesButton = new JButton("Rules");
+        rulesButton.setPreferredSize(new Dimension(100, 50));
+        rulesButton.addActionListener(new RulesListener());
+        menuPanel.add(rulesButton);
+        rulesButton.setVisible(true);
+
+        exitButton = new JButton("Exit");
+        exitButton.setPreferredSize(new Dimension(100, 50));
+        exitButton.addActionListener(new ExitListenerButton());
+        menuPanel.add(exitButton);
+        exitButton.setVisible(true);
+
         frame.add(gamePanel, BorderLayout.NORTH);
         frame.add(menuPanel, BorderLayout.SOUTH);
-        frame.addKeyListener(new ExitAction());
-
+        frame.addKeyListener(new ExitListener());
+        frame.setFocusable(true);
         frame.pack();
 
         frame.setLocationRelativeTo(null);
@@ -46,16 +67,61 @@ public class StartGUI implements ActionListener {
         gui.createAndShowGUI();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        GameField newGame = new GameField();
-        gamePanel.add(newGame);
-        newGame.requestFocus();
-        nGame.setVisible(false);
-        B1.setVisible(true);
-        B1.setText("B2");
-        label.setText(newGame.getGameScore());
-        label.setVisible(true);
+    class NewGameListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            nGameButton.setVisible(false);
+            newGame = new GameField();
+            gamePanel.add(newGame);
+            newGame.requestFocus();
+            pauseButton.setVisible(true);
+            restartButton.setVisible(true);
+        }
+    }
 
+    class RestartListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            newGame.restart();
+            newGame.requestFocus();
+        }
+    }
+
+    class PauseListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if(pauseButton.getText().equals("Pause")) {
+                pauseButton.setText("Continue");
+                newGame.gamePause();
+            } else {
+                if(pauseButton.getText().equals("Continue")) {
+                    pauseButton.setText("Pause");
+                    newGame.gamePause();
+                    newGame.requestFocus();
+                }
+            }
+        }
+    }
+
+    class RulesListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
+    class ExitListenerButton implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            new ExitAction();
+        }
+    }
+    class ExitListener extends KeyAdapter {
+        @Override
+        public void keyTyped(KeyEvent e) { }
+
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
+                new ExitAction();
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) { }
     }
 }
