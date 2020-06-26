@@ -25,19 +25,19 @@ public class GameField extends JPanel implements ActionListener {
     private final String DOWN = "down";
     private final String STOP = "stop";
     private String currentDirection = RIGHT;
-    private boolean escPressed = false;
+    private boolean gamePaused = false;
     private int gameScore;
-    private boolean inGame = true;
+    public boolean inGame = true;
     private GameCube redCube;
     private GameCube yellowCube;
     private Point gameFieldPoint;
     private ArrayList<Point> gameFieldPointsList = new ArrayList<Point>();
     private int pointCounter = 0;
     private int steps = 0;
-    private JLabel label;
 
     public GameField(){
-        setPreferredSize(new Dimension(SIZE+50,SIZE+50));
+        gameScore = 0;
+        setPreferredSize(new Dimension(SIZE,SIZE));
         setBackground(Color.BLACK);
         loadGameObjects();
         for (int i = 0; i < SIZE/10; i++){
@@ -50,30 +50,19 @@ public class GameField extends JPanel implements ActionListener {
         }
         timer = new Timer(delay,this);
         timer.start();
-        gameScore = 0;
         addKeyListener(new FieldKeyListener());
         requestFocus();
-        setFocusable(true);
-        label = new JLabel();
-        label.setText(Integer.toString(gameScore));
-        label.setVisible(true);
-        add(label);
     }
 
     public void restart(){
         currentDirection = RIGHT;
-        escPressed = false;
+        gamePaused = false;
         inGame = true;
         gameFieldPointsList = new ArrayList<Point>();
         pointCounter = 0;
         steps = 0;
-        setPreferredSize(new Dimension(SIZE+50,SIZE+50));
+        setPreferredSize(new Dimension(SIZE,SIZE));
         setBackground(Color.BLACK);
-        remove(label);
-        label = new JLabel();
-        label.setText(Integer.toString(gameScore));
-        label.setVisible(true);
-        add(label);
         loadGameObjects();
         for (int i = 0; i < SIZE/10; i++){
             for (int j = 0; j < SIZE/10; j++){
@@ -90,6 +79,14 @@ public class GameField extends JPanel implements ActionListener {
         addKeyListener(new FieldKeyListener());
         requestFocus();
         setFocusable(true);
+    }
+
+    public int getScore(){
+        return gameScore;
+    }
+
+    public int getTimerDelay(){
+        return delay;
     }
 
     private void loadGameObjects(){
@@ -239,7 +236,6 @@ public class GameField extends JPanel implements ActionListener {
                 yellowApple.delete();
             }
         }
-        label.setText(Integer.toString(gameScore));
         steps++;
     }
 
@@ -259,10 +255,10 @@ public class GameField extends JPanel implements ActionListener {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        for (int i = 0; i < pointCounter; i++) {
+            g.drawImage(gameFieldIM,(int)gameFieldPointsList.get(i).getX(), (int)gameFieldPointsList.get(i).getY(), this);
+        }
         if (inGame){
-            for (int i = 0; i < pointCounter; i++) {
-                g.drawImage(gameFieldIM,(int)gameFieldPointsList.get(i).getX(), (int)gameFieldPointsList.get(i).getY(), this);
-            }
             if (snake.getDirection().equals(STOP)){
                 String str = "Pause";
                 Font f = new Font("Arial",Font.BOLD, 20);
@@ -287,27 +283,28 @@ public class GameField extends JPanel implements ActionListener {
         } else {
             timer.stop();
             snake.setDirection(STOP);
-            label.setVisible(false);
-            String str = "Game Over With final score: " + gameScore;
-            Font f = new Font("Arial",Font.BOLD, 14);
+            String str = "Game Over";
+            Font f = new Font("Arial",Font.BOLD, 20);
             FontMetrics fontMetrics = this.getFontMetrics(f);
             int strWidth = fontMetrics.stringWidth(str);
-            g.setColor(Color.white);
+            g.setColor(Color.orange);
             g.setFont(f);
             g.drawString(str, (SIZE - strWidth)/2,(SIZE + f.getSize())/2);
         }
     }
 
     public void gamePause(){
-        if (escPressed){
+        if (gamePaused){
             snake.setDirection(currentDirection);
-            escPressed = false;
+            gamePaused = false;
         } else{
             snake.setDirection(STOP);
-            escPressed = true;
+            gamePaused = true;
         }
     }
-
+    public boolean isPaused(){
+        return gamePaused;
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!snake.getDirection().equals(STOP)){
@@ -339,13 +336,12 @@ public class GameField extends JPanel implements ActionListener {
             checkCollisions();
         }
         repaint();
-       // System.out.println(timer.getDelay());
     }
 
     class FieldKeyListener extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (snake.getMoved() && !escPressed){
+            if (snake.getMoved() && !gamePaused){
                 if (e.getKeyCode() == KeyEvent.VK_LEFT && !currentDirection.equals(RIGHT)) {
                     snake.setDirection(LEFT);
                     snake.setMoved(false);
