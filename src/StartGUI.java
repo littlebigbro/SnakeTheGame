@@ -24,7 +24,6 @@ public class StartGUI {
 
         JPanel menuPanel = new JPanel();
         menuPanel.setPreferredSize(new Dimension(300,100));
-        //menuPanel.setBackground(Color.pink);
         menuPanel.setLayout(new GridBagLayout());
 
         newGameButton = new JButton("New Game");
