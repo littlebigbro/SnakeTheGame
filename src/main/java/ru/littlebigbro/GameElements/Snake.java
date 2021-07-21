@@ -1,9 +1,11 @@
+package main.java.ru.littlebigbro.GameElements;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Snake {
-    private final int SEGMENT_SIZE = 10;
+public class Snake implements GameElement {
+    private final static int SEGMENT_SIZE = 10;
     private int snakeSize = 3;
     private String snakeDirection = "stop";
     private Point point;
@@ -11,7 +13,7 @@ public class Snake {
     private boolean moved;
 
     public Image icon(){
-        ImageIcon segmentIcon = new ImageIcon("pics/snake.png");
+        ImageIcon segmentIcon = new ImageIcon("pics/snakeBody.png");
         return segmentIcon.getImage();
     }
 
@@ -88,5 +90,10 @@ public class Snake {
             points.get(0).translate(0, SEGMENT_SIZE);
         }
         moved = true;
+    }
+
+    @Override
+    public void create(Point point, ArrayList<Point> restrictionList) {
+
     }
 }

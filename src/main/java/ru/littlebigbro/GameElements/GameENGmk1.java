@@ -1,21 +1,22 @@
+package main.java.ru.littlebigbro.GameElements;
+
+import main.java.ru.littlebigbro.Utils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class GameField extends JPanel implements ActionListener {
-    private final static int SIZE = 300;
+public class GameENGmk1 extends JPanel implements ActionListener, GameElement {
+    private final static int FIELD_SIZE_IN_PIXELS = 300;
+    private final static int SEGMENT_SIZE_IN_PIXELS = 10;
+    private final static int SEGMENTS_COUNT = FIELD_SIZE_IN_PIXELS/SEGMENT_SIZE_IN_PIXELS;
     private Snake snake;
     private int snakeHeadX;
     private int snakeHeadY;
-    private Apples greenApple;
-    private Apples redApple;
-    private Apples yellowApple;
-    private Image segmentIm;
-    private Image snakeHeadIm;
-    private Image greenAppleIm,redAppleIm,yellowAppleIm;
-    private Image gameFieldIM;
-    private ImageIcon gameFieldIcon;
+    private Apple greenApple;
+    private Apple redApple;
+    private Apple yellowApple;
 
     final private int delay = 300;
     private Timer timer;
@@ -28,26 +29,17 @@ public class GameField extends JPanel implements ActionListener {
     private boolean gamePaused = false;
     private int gameScore;
     public boolean inGame = true;
-    private GameCube redCube;
-    private GameCube yellowCube;
+
     private Point gameFieldPoint;
     private ArrayList<Point> gameFieldPointsList = new ArrayList<Point>();
     private int pointCounter = 0;
     private int steps = 0;
 
-    public GameField(){
+    public GameENGmk1(){
         gameScore = 0;
-        setPreferredSize(new Dimension(SIZE,SIZE));
+        setPreferredSize(new Dimension(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS));
         setBackground(Color.BLACK);
         loadGameObjects();
-        for (int i = 0; i < SIZE/10; i++){
-            for (int j = 0; j < SIZE/10; j++){
-                gameFieldPoint = new Point();
-                gameFieldPoint.setLocation(i * 10,j * 10);
-                gameFieldPointsList.add(pointCounter,gameFieldPoint);
-                pointCounter++;
-            }
-        }
         timer = new Timer(delay,this);
         timer.start();
         addKeyListener(new FieldKeyListener());
@@ -61,11 +53,11 @@ public class GameField extends JPanel implements ActionListener {
         gameFieldPointsList = new ArrayList<Point>();
         pointCounter = 0;
         steps = 0;
-        setPreferredSize(new Dimension(SIZE,SIZE));
+        setPreferredSize(new Dimension(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS));
         setBackground(Color.BLACK);
         loadGameObjects();
-        for (int i = 0; i < SIZE/10; i++){
-            for (int j = 0; j < SIZE/10; j++){
+        for (int i = 0; i < SEGMENTS_COUNT; i++){
+            for (int j = 0; j < SEGMENTS_COUNT; j++){
                 gameFieldPoint = new Point();
                 gameFieldPoint.setLocation(i * 10,j * 10);
                 gameFieldPointsList.add(pointCounter,gameFieldPoint);
@@ -94,39 +86,21 @@ public class GameField extends JPanel implements ActionListener {
         snake.setDirection(currentDirection);
         snake.draw();
 
-        greenApple = new Apples();
-        greenApple.create(SIZE,SIZE,snake.getPoints()); // может наложиться на другие яблоки
-        greenApple.setScore(10);
-        greenApple.appleIcon = new ImageIcon("pics/greenapple.png");
+        greenApple = new Apple(ImagePath.GREEN_APPLE.getPath(), 10, 50);
+        //Может наложиться на другие яблоки
+        greenApple.create(Utils.getRandomPoint(SEGMENTS_COUNT, SEGMENTS_COUNT), snake.getPoints());
 
-        redApple = new Apples();
-        redApple.setScore(100);
-        redApple.create(-2, 0); //координаты яблока по-умолчанию [0,0], оно создается но его не видно на игровом поле
-        redApple.appleIcon = new ImageIcon("pics/redapple.png");
+        //координаты яблока по-умолчанию [0,0], оно создается но его не видно на игровом поле
+        redApple = new Apple(ImagePath.RED_APPLE.getPath(), 100, 10);
+        //redApple.create(new Point(-10, 0), null);
+        redApple.create(new Point(50, 20), snake.getPoints());
 
-        yellowApple = new Apples();
-        yellowApple.create(-1, 0);
-        yellowApple.setScore(-50);
-        yellowApple.appleIcon = new ImageIcon("pics/yellowapple.png");
-
-        redCube = new GameCube();
-        yellowCube = new GameCube();
-
-        gameFieldIcon = new ImageIcon("pics/field3.png");
-
-        loadImages();
+        yellowApple = new Apple(ImagePath.YELLOW_APPLE.getPath(), -50, 20);
+//        yellowApple.create(new Point(-20, 0), null);
+        yellowApple.create(new Point(70, 10), snake.getPoints());
     }
 
-    private void loadImages(){
-        greenAppleIm = greenApple.icon();
-        redAppleIm = redApple.icon();
-        yellowAppleIm = yellowApple.icon();
-        segmentIm = snake.icon();
-        snakeHeadIm = snake.head();
-        gameFieldIM = gameFieldIcon.getImage();
-    }
-
-    private int setChanceCompareSnakeSize(Apples apple){
+    private int setChanceCompareSnakeSize(Apple apple){
         int chance = 0;
         if (snake.getSnakeSize() > 5 && snake.getSnakeSize() < 10){
             if (apple.equals(redApple))
@@ -161,81 +135,81 @@ public class GameField extends JPanel implements ActionListener {
         return chance;
     }
 
-    private int calculateAppleTimeOfExistance(Snake snake, Apples apple, int factor){
-        int dX = Math.abs(snake.getPointX(0) - apple.getX());
-        int dY = Math.abs(snake.getPointY(0) - apple.getY());
+    private int calculateAppleTimeOfExistance(Snake snake, Apple apple, int factor){
+        int dX = Math.abs(snake.getPointX(0) - apple.getCoordinates().getX());
+        int dY = Math.abs(snake.getPointY(0) - apple.getCoordinates().getY());
         return factor * ( dX + dY) / 10;
     }
 
     private void checkApple(){
         double snakeSize = snake.getSnakeSize();
-        if (snakeHeadX == greenApple.getX() && snakeHeadY == greenApple.getY()){
-            snakeSize++;
-            snake.setSnakeSize((int)snakeSize);
-            gameScore += greenApple.getScore();
-            greenApple.delete();
-            greenApple.create(SIZE, SIZE, snake.getPoints());
-        }
-        if (steps % 5 == 0 && steps != 0 && snake.getSnakeSize() > 4) {
-            redCube.setChance(setChanceCompareSnakeSize(redApple));
-            if (snake.getSnakeSize() % 2 == 0 && !redApple.isExist()) {
-                if (redCube.shot() > 4) {
-                    redApple.create(SIZE, SIZE, snake.getPoints());
-                    redApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 3)); // задаю время существования
-                    redCube.setDoubleChanceThrow(false);
-                } else {
-                    //при втором броске вероятность выпадения красного яблока увеличивается
-                    if (redCube.getDoubleChanceThrow() && redCube.doubleChanceThrow() <= 6) {
-                        redApple.create(SIZE, SIZE, snake.getPoints());
-                        redApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 3));
-                        redCube.setDoubleChanceThrow(false);
-                    } else {
-                        redCube.setDoubleChanceThrow(true);
-                    }
-                }
-            }
-            yellowCube.setChance(setChanceCompareSnakeSize(yellowApple));
-            if (snake.getSnakeSize() % 2 == 1 && !yellowApple.isExist()) {
-                if (yellowCube.shot() >= 5) {
-                    yellowApple.create(SIZE, SIZE, snake.getPoints());
-                    yellowApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 6));
-                }
-            }
-            steps = 0;
-        }
-        if (snakeHeadX == redApple.getX() && snakeHeadY == redApple.getY()){
-            if (snakeSize / 2 >= 3){
-                snakeSize = snakeSize/2;
-            }
-            snake.setSnakeSize((int) Math.ceil(snakeSize));
-            gameScore += redApple.getScore();
-            redApple.setTimeOfExist(0);
-            redApple.delete();
-        }
-        if (snakeHeadX == yellowApple.getX() && snakeHeadY == yellowApple.getY()){
-            snakeSize = snakeSize * 2;
-            snake.setSnakeSize((int)snakeSize);
-            gameScore += yellowApple.getScore();
-            yellowApple.delete();
-        }
-        if (redApple.isExist()){
-            if (redApple.getTimeOfExist() > 0){
-                int tempTime = redApple.getTimeOfExist();
-                redApple.setTimeOfExist(--tempTime);
-            }
-            if (redApple.getTimeOfExist() <= 0){
-                redApple.delete();
-            }
-        }
-        if (yellowApple.isExist()){
-            if (yellowApple.getTimeOfExist() > 0){
-                int tempTime = yellowApple.getTimeOfExist();
-                yellowApple.setTimeOfExist(--tempTime);
-            }
-            if (yellowApple.getTimeOfExist() <= 0){
-                yellowApple.delete();
-            }
-        }
+//        if (snakeHeadX == greenApple.getX() && snakeHeadY == greenApple.getY()){
+//            snakeSize++;
+//            snake.setSnakeSize((int)snakeSize);
+//            gameScore += greenApple.getScore();
+//            greenApple.remove();
+//            greenApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
+//        }
+//        if (steps % 5 == 0 && steps != 0 && snake.getSnakeSize() > 4) {
+//            GameCube.shot(setChanceCompareSnakeSize(redApple));
+//            if (snake.getSnakeSize() % 2 == 0 && !redApple.isExist()) {
+//                if (redCube.shot() > 4) {
+//                    redApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
+//                    redApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 3)); // задаю время существования
+//                    redCube.setDoubleChanceThrow(false);
+//                } else {
+//                    //при втором броске вероятность выпадения красного яблока увеличивается
+//                    if (redCube.getDoubleChanceThrow() && redCube.doubleChanceThrow() <= 6) {
+//                        redApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
+//                        redApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 3));
+//                        redCube.setDoubleChanceThrow(false);
+//                    } else {
+//                        redCube.setDoubleChanceThrow(true);
+//                    }
+//                }
+//            }
+//            yellowCube.setChance(setChanceCompareSnakeSize(yellowApple));
+//            if (snake.getSnakeSize() % 2 == 1 && !yellowApple.isExist()) {
+//                if (yellowCube.shot() >= 5) {
+//                    yellowApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
+//                    yellowApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 6));
+//                }
+//            }
+//            steps = 0;
+//        }
+//        if (snakeHeadX == redApple.getX() && snakeHeadY == redApple.getY()){
+//            if (snakeSize / 2 >= 3){
+//                snakeSize = snakeSize/2;
+//            }
+//            snake.setSnakeSize((int) Math.ceil(snakeSize));
+//            gameScore += redApple.getDeafaultScore();
+//            redApple.setTimeOfExist(0);
+//            redApple.delete();
+//        }
+//        if (snakeHeadX == yellowApple.getX() && snakeHeadY == yellowApple.getY()){
+//            snakeSize = snakeSize * 2;
+//            snake.setSnakeSize((int)snakeSize);
+//            gameScore += yellowApple.getDeafaultScore();
+//            yellowApple.delete();
+//        }
+//        if (redApple.isExist()){
+//            if (redApple.getTimeOfExist() > 0){
+//                int tempTime = redApple.getTimeOfExist();
+//                redApple.setTimeOfExist(--tempTime);
+//            }
+//            if (redApple.getTimeOfExist() <= 0){
+//                redApple.delete();
+//            }
+//        }
+//        if (yellowApple.isExist()){
+//            if (yellowApple.getTimeOfExist() > 0){
+//                int tempTime = yellowApple.getTimeOfExist();
+//                yellowApple.setTimeOfExist(--tempTime);
+//            }
+//            if (yellowApple.getTimeOfExist() <= 0){
+//                yellowApple.delete();
+//            }
+//        }
         steps++;
     }
 
@@ -245,20 +219,21 @@ public class GameField extends JPanel implements ActionListener {
                 inGame = false;
             }
         }
-        if ((snakeHeadX == SIZE && snake.getDirection().equals(RIGHT)) ||
+        if ((snakeHeadX == FIELD_SIZE_IN_PIXELS && snake.getDirection().equals(RIGHT)) ||
             (snakeHeadX < 0 && snake.getDirection().equals(LEFT)) ||
             (snakeHeadY < 0 && snake.getDirection().equals(UP)) ||
-            (snakeHeadY == SIZE && snake.getDirection().equals(DOWN))) {
+            (snakeHeadY == FIELD_SIZE_IN_PIXELS && snake.getDirection().equals(DOWN))) {
             inGame = false;
         }
     }
 
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        for (int i = 0; i < pointCounter; i++) {
-            g.drawImage(gameFieldIM,(int)gameFieldPointsList.get(i).getX(), (int)gameFieldPointsList.get(i).getY(), this);
-        }
-        if (inGame){
+
+        GraphicEngine graphicEngine = new GraphicEngine(g,this);
+        Cell cell = new Cell();
+        cell.setImage(ImagePath.FIELD_CELL.getPath());
+        super.paintComponent(graphicEngine.drawFieldWithCells(cell, FIELD_SIZE_IN_PIXELS,FIELD_SIZE_IN_PIXELS));
+/*        if (inGame){
             if (snake.getDirection().equals(STOP)){
                 String str = "Pause";
                 Font f = new Font("Arial",Font.BOLD, 20);
@@ -266,19 +241,20 @@ public class GameField extends JPanel implements ActionListener {
                 int strWidth = fontMetrics.stringWidth(str);
                 g.setColor(Color.white);
                 g.setFont(f);
-                g.drawString(str, (SIZE - strWidth)/2,(SIZE + f.getSize())/2);
+                g.drawString(str, (FIELD_SIZE_IN_PIXELS - strWidth)/2,(FIELD_SIZE_IN_PIXELS + f.getSize())/2);
             } else {
-                g.drawImage(greenAppleIm, greenApple.getX(), greenApple.getY(), this);
+
+                graphicEngine.drawApple(greenApple);
                 if (redApple.isExist()){
-                    g.drawImage(redAppleIm, redApple.getX(), redApple.getY(), this);
+                    graphicEngine.drawApple(redApple);
                 }
                 if (yellowApple.isExist()){
-                    g.drawImage(yellowAppleIm, yellowApple.getX(), yellowApple.getY(), this);
+                    graphicEngine.drawApple(yellowApple);
                 }
-                g.drawImage(snakeHeadIm, snake.getPointX(0), snake.getPointY(0), this);
-                for (int i = 1; i < snake.getSnakeSize(); i++) {
-                    g.drawImage(segmentIm, snake.getPointX(i), snake.getPointY(i), this);
-                }
+//                g.drawImage(snakeHeadIm, snake.getPointX(0), snake.getPointY(0), this);
+//                for (int i = 1; i < snake.getSnakeSize(); i++) {
+//                    g.drawImage(segmentIm, snake.getPointX(i), snake.getPointY(i), this);
+//                }
             }
         } else {
             timer.stop();
@@ -289,8 +265,8 @@ public class GameField extends JPanel implements ActionListener {
             int strWidth = fontMetrics.stringWidth(str);
             g.setColor(Color.orange);
             g.setFont(f);
-            g.drawString(str, (SIZE - strWidth)/2,(SIZE + f.getSize())/2);
-        }
+            g.drawString(str, (FIELD_SIZE_IN_PIXELS - strWidth)/2,(FIELD_SIZE_IN_PIXELS + f.getSize())/2);
+        }*/
     }
 
     public void gamePause(){
@@ -336,6 +312,11 @@ public class GameField extends JPanel implements ActionListener {
             checkCollisions();
         }
         repaint();
+    }
+
+    @Override
+    public void create(Point point, ArrayList<Point> restrictionList) {
+
     }
 
     class FieldKeyListener extends KeyAdapter {
