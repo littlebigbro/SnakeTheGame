@@ -228,22 +228,17 @@ public class GameENGmk1 extends JPanel implements ActionListener, GameElement {
     }
 
     protected void paintComponent(Graphics g) {
-
         GraphicEngine graphicEngine = new GraphicEngine(g,this);
+        //super.paintComponent(g);
         Cell cell = new Cell();
         cell.setImage(ImagePath.FIELD_CELL.getPath());
-        super.paintComponent(graphicEngine.drawFieldWithCells(cell, FIELD_SIZE_IN_PIXELS,FIELD_SIZE_IN_PIXELS));
-/*        if (inGame){
+        graphicEngine.drawFieldWithCells(cell, FIELD_SIZE_IN_PIXELS,FIELD_SIZE_IN_PIXELS);
+        if (inGame){
             if (snake.getDirection().equals(STOP)){
-                String str = "Pause";
-                Font f = new Font("Arial",Font.BOLD, 20);
-                FontMetrics fontMetrics = this.getFontMetrics(f);
-                int strWidth = fontMetrics.stringWidth(str);
-                g.setColor(Color.white);
-                g.setFont(f);
-                g.drawString(str, (FIELD_SIZE_IN_PIXELS - strWidth)/2,(FIELD_SIZE_IN_PIXELS + f.getSize())/2);
+                String message = "Pause";
+                graphicEngine.setColor(Color.white);
+                graphicEngine.drawMessageString(message, this, FIELD_SIZE_IN_PIXELS);
             } else {
-
                 graphicEngine.drawApple(greenApple);
                 if (redApple.isExist()){
                     graphicEngine.drawApple(redApple);
@@ -259,14 +254,11 @@ public class GameENGmk1 extends JPanel implements ActionListener, GameElement {
         } else {
             timer.stop();
             snake.setDirection(STOP);
-            String str = "Game Over";
-            Font f = new Font("Arial",Font.BOLD, 20);
-            FontMetrics fontMetrics = this.getFontMetrics(f);
-            int strWidth = fontMetrics.stringWidth(str);
-            g.setColor(Color.orange);
-            g.setFont(f);
-            g.drawString(str, (FIELD_SIZE_IN_PIXELS - strWidth)/2,(FIELD_SIZE_IN_PIXELS + f.getSize())/2);
-        }*/
+            String message = "Game Over";
+            graphicEngine.setColor(Color.orange);
+            graphicEngine.drawMessageString(message, this, FIELD_SIZE_IN_PIXELS);
+
+        }
     }
 
     public void gamePause(){
