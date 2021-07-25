@@ -1,6 +1,4 @@
-package main.java.ru.littlebigbro;
-
-import main.java.ru.littlebigbro.GameElements.Point;
+package main.java.ru.littlebigbro.Extra;
 
 import java.util.Random;
 
@@ -11,6 +9,6 @@ public class Utils {
     }
 
     public static Point getRandomPoint(int maxX, int maxY) {
-        return new Point(getRandomInt(maxX),getRandomInt(maxY));
+        return new Point(getRandomInt(maxX), getRandomInt(maxY));
     }
 }

@@ -1,17 +1,22 @@
 package main.java.ru.littlebigbro.GameElements;
 
-import main.java.ru.littlebigbro.Utils;
+import main.java.ru.littlebigbro.Enums.ImagePath;
+import main.java.ru.littlebigbro.Extra.Point;
+import main.java.ru.littlebigbro.Extra.Utils;
+import main.java.ru.littlebigbro.Interfaces.GameElement;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Apple {
-    public final static int SIZE = 10;
+public class Apple implements GameElement {
+    public static final int DEFAULT_SIZE = 10;
     private final String DEFAULT_IMAGE_PATH = ImagePath.GREEN_APPLE.getPath();
 
-    private Point coordinates = new Point();
+    private int size = DEFAULT_SIZE;
+    private main.java.ru.littlebigbro.Extra.Point coordinates = new main.java.ru.littlebigbro.Extra.Point();
     private ImageIcon icon;
     private int score;
     private int chance = 0;
@@ -24,13 +29,19 @@ public class Apple {
         setImage(pathToImage);
     }
 
-    public boolean create(Point point, ArrayList<Point> restrictionList){
+    @Override
+    public void create() {
+
+    }
+
+    //TODO: Переделать
+    public boolean create(main.java.ru.littlebigbro.Extra.Point point, ArrayList<main.java.ru.littlebigbro.Extra.Point> restrictionList) {
         if (point == null || point.getX() < 0 || restrictionList == null) {
             return false;
         }
-        while (true){
-            coordinates.setLocation(Utils.getRandomInt(point.getX()),Utils.getRandomInt(point.getY()));
-            if (!restrictionList.contains(coordinates)){
+        while (true) {
+            coordinates.setLocation(Utils.getRandomInt(point.getX()), Utils.getRandomInt(point.getY()));
+            if (!restrictionList.contains(coordinates)) {
                 break;
             }
         }
@@ -38,9 +49,9 @@ public class Apple {
         return true;
     }
 
-    public void remove(){
+    public void remove() {
         isExist = false;
-        coordinates.setLocation(-3,0);
+        coordinates.setLocation(-3, 0);
     }
 
     @Override
@@ -56,11 +67,21 @@ public class Apple {
         return Objects.hash(coordinates, icon, isExist);
     }
 
-    public Point getCoordinates() {
-        return coordinates;
+    public List<main.java.ru.littlebigbro.Extra.Point> getCoordinates() {
+        List<Point> pointList = new ArrayList<>();
+        pointList.add(coordinates);
+        return pointList;
     }
 
-    public Image getImage(){
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public Image getImage() {
         return icon.getImage();
     }
 
@@ -69,15 +90,15 @@ public class Apple {
         icon = new ImageIcon(path);
     }
 
-    public int getStepsOfExist(){
+    public int getStepsOfExist() {
         return stepsOfExist;
     }
 
-    public void setStepsOfExist(int steps){
+    public void setStepsOfExist(int steps) {
         stepsOfExist = steps;
     }
 
-    public boolean isExist(){
+    public boolean isExist() {
         return isExist;
     }
 

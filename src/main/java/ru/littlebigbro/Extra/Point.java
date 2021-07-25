@@ -1,4 +1,4 @@
-package main.java.ru.littlebigbro.GameElements;
+package main.java.ru.littlebigbro.Extra;
 
 public class Point {
     private int x;
@@ -29,11 +29,11 @@ public class Point {
     }
 
     public void setLocation(int x, int y) {
-        move(x,y);
+        move(x, y);
     }
 
     public void setLocation(Point p) {
-        move(p.getX(),p.getY());
+        move(p.getX(), p.getY());
     }
 
     public void move(int x, int y) {
