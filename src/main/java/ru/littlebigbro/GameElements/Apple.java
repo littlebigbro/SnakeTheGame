@@ -16,7 +16,7 @@ public class Apple implements GameElement {
     private final String DEFAULT_IMAGE_PATH = ImagePath.GREEN_APPLE.getPath();
 
     private int size = DEFAULT_SIZE;
-    private main.java.ru.littlebigbro.Extra.Point coordinates = new main.java.ru.littlebigbro.Extra.Point();
+    private Point coordinates = new Point();
     private ImageIcon icon;
     private int score;
     private int chance = 0;
@@ -35,7 +35,7 @@ public class Apple implements GameElement {
     }
 
     //TODO: Переделать
-    public boolean create(main.java.ru.littlebigbro.Extra.Point point, ArrayList<main.java.ru.littlebigbro.Extra.Point> restrictionList) {
+    public boolean create(Point point, ArrayList<Point> restrictionList) {
         if (point == null || point.getX() < 0 || restrictionList == null) {
             return false;
         }
@@ -67,7 +67,7 @@ public class Apple implements GameElement {
         return Objects.hash(coordinates, icon, isExist);
     }
 
-    public List<main.java.ru.littlebigbro.Extra.Point> getCoordinates() {
+    public List<Point> getCoordinates() {
         List<Point> pointList = new ArrayList<>();
         pointList.add(coordinates);
         return pointList;

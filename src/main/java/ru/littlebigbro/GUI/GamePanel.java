@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private int gameScore;
     public boolean inGame = true;
 
-    private main.java.ru.littlebigbro.Extra.Point gameFieldPoint;
+    private Point gameFieldPoint;
     private ArrayList<Point> gameFieldPointsList = new ArrayList<>();
     private int pointCounter = 0;
     private int steps = 0;
@@ -60,7 +60,7 @@ public class GamePanel extends JPanel implements ActionListener {
         currentDirection = RIGHT;
         gamePaused = false;
         inGame = true;
-        gameFieldPointsList = new ArrayList<main.java.ru.littlebigbro.Extra.Point>();
+        gameFieldPointsList = new ArrayList<>();
         pointCounter = 0;
         steps = 0;
         setPreferredSize(new Dimension(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS));
@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements ActionListener {
         loadGameObjects();
         for (int i = 0; i < SEGMENTS_COUNT; i++) {
             for (int j = 0; j < SEGMENTS_COUNT; j++) {
-                gameFieldPoint = new main.java.ru.littlebigbro.Extra.Point();
+                gameFieldPoint = new Point();
                 gameFieldPoint.setLocation(i * 10, j * 10);
                 gameFieldPointsList.add(pointCounter, gameFieldPoint);
                 pointCounter++;
@@ -98,16 +98,16 @@ public class GamePanel extends JPanel implements ActionListener {
 
         greenApple = new Apple(ImagePath.GREEN_APPLE.getPath(), 10, 50);
         //Может наложиться на другие яблоки
-        greenApple.create(Utils.getRandomPoint(SEGMENTS_COUNT, SEGMENTS_COUNT), (ArrayList<main.java.ru.littlebigbro.Extra.Point>) snake.getPoints());
+        greenApple.create(Utils.getRandomPoint(SEGMENTS_COUNT, SEGMENTS_COUNT), (ArrayList<Point>) snake.getPoints());
 
         //координаты яблока по-умолчанию [0,0], оно создается но его не видно на игровом поле
         redApple = new Apple(ImagePath.RED_APPLE.getPath(), 100, 10);
         //redApple.create(new Point(-10, 0), null);
-        redApple.create(new main.java.ru.littlebigbro.Extra.Point(50, 20), (ArrayList<main.java.ru.littlebigbro.Extra.Point>) snake.getPoints());
+        redApple.create(new Point(50, 20), (ArrayList<Point>) snake.getPoints());
 
         yellowApple = new Apple(ImagePath.YELLOW_APPLE.getPath(), -50, 20);
 //        yellowApple.create(new Point(-20, 0), null);
-        yellowApple.create(new main.java.ru.littlebigbro.Extra.Point(70, 10), (ArrayList<Point>) snake.getPoints());
+        yellowApple.create(new Point(70, 10), (ArrayList<Point>) snake.getPoints());
     }
 
     private int setChanceCompareSnakeSize(Apple apple) {

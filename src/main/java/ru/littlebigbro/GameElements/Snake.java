@@ -16,8 +16,8 @@ public class Snake implements GameElement {
     private static final int DEFAULT_SEGMENT_SIZE = 10;
     private static final int DEFAULT_SNAKE_SIZE = 3;
     private String snakeDirection = MovementDirection.NO_DIRECTION.getDirection();
-    private main.java.ru.littlebigbro.Extra.Point point;
-    final private List<main.java.ru.littlebigbro.Extra.Point> points = new ArrayList<>();
+    private Point point;
+    final private List<Point> points = new ArrayList<>();
     private int size;
     private boolean moved;
     private ImageIcon icon;
@@ -67,7 +67,7 @@ public class Snake implements GameElement {
     }
 
     @Override
-    public List<main.java.ru.littlebigbro.Extra.Point> getCoordinates() {
+    public List<Point> getCoordinates() {
         return points;
     }
 
@@ -89,7 +89,7 @@ public class Snake implements GameElement {
     private boolean checkSize(int size) {
         if (size > this.size) {
             for (int i = this.size - 1; i < size; i++) {
-                point = new main.java.ru.littlebigbro.Extra.Point();
+                point = new Point();
                 point.setLocation(points.get(i));
                 points.add(i, point);
             }
