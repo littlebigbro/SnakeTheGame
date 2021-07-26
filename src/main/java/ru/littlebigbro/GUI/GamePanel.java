@@ -93,21 +93,21 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void loadGameObjects() {
         snake = new Snake();
+        snake.create();
         snake.setDirection(currentDirection);
         snake.draw();
 
         greenApple = new Apple(ImagePath.GREEN_APPLE.getPath(), 10, 50);
-        //Может наложиться на другие яблоки
-        greenApple.create(Utils.getRandomPoint(SEGMENTS_COUNT, SEGMENTS_COUNT), (ArrayList<Point>) snake.getPoints());
+        greenApple.create();
 
         //координаты яблока по-умолчанию [0,0], оно создается но его не видно на игровом поле
         redApple = new Apple(ImagePath.RED_APPLE.getPath(), 100, 10);
         //redApple.create(new Point(-10, 0), null);
-        redApple.create(new Point(50, 20), (ArrayList<Point>) snake.getPoints());
+        redApple.create(new Point(50, 20));
 
         yellowApple = new Apple(ImagePath.YELLOW_APPLE.getPath(), -50, 20);
 //        yellowApple.create(new Point(-20, 0), null);
-        yellowApple.create(new Point(70, 10), (ArrayList<Point>) snake.getPoints());
+        yellowApple.create(new Point(70, 10));
     }
 
     private int setChanceCompareSnakeSize(Apple apple) {
@@ -254,10 +254,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 if (yellowApple.isExist()) {
                     graphicEngine.drawApple(yellowApple);
                 }
-//                g.drawImage(snakeHeadIm, snake.getPointX(0), snake.getPointY(0), this);
-//                for (int i = 1; i < snake.getSnakeSize(); i++) {
-//                    g.drawImage(segmentIm, snake.getPointX(i), snake.getPointY(i), this);
-//                }
+                graphicEngine.drawSnake(snake);
             }
         } else {
             timer.stop();
@@ -285,8 +282,8 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!snake.getDirection().equals(STOP)) {
-            snake.move();
+       /* if (!snake.getDirection().equals(STOP)) {
+          //  snake.move();
             snakeHeadX = snake.getPointX(0);
             snakeHeadY = snake.getPointY(0);
             checkApple();
@@ -312,7 +309,7 @@ public class GamePanel extends JPanel implements ActionListener {
                 timer.setDelay((int) (delay * 0.125));//50
             }
             checkCollisions();
-        }
+        }*/
         repaint();
     }
 

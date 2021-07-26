@@ -9,6 +9,7 @@ import main.java.ru.littlebigbro.Interfaces.Engine;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.ImageObserver;
+import java.util.List;
 
 public class GraphicEngine implements Engine {
     private final Graphics g;
@@ -20,8 +21,15 @@ public class GraphicEngine implements Engine {
     }
 
     public void drawSnake(Snake snake) {
-        snake.getImage();
-
+        Image headImage = snake.getHeadImage();
+        Image bodyImage = snake.getImage();
+        List<Point> points = snake.getCoordinates();
+        g.drawImage(headImage, points.get(0).getX(), points.get(0).getY(), imageObserver);
+        for (int i = 1; i < points.size(); i++) {
+            int x = points.get(i).getX();
+            int y = points.get(i).getY();
+            g.drawImage(bodyImage, x, y, imageObserver);
+        }
     }
 
     public void drawApple(Apple apple) {

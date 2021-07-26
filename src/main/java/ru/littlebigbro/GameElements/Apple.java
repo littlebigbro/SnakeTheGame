@@ -2,6 +2,7 @@ package main.java.ru.littlebigbro.GameElements;
 
 import main.java.ru.littlebigbro.Enums.ImagePath;
 import main.java.ru.littlebigbro.Extra.Point;
+import main.java.ru.littlebigbro.Extra.Restrictions;
 import main.java.ru.littlebigbro.Extra.Utils;
 import main.java.ru.littlebigbro.Interfaces.GameElement;
 
@@ -14,9 +15,8 @@ import java.util.Objects;
 public class Apple implements GameElement {
     public static final int DEFAULT_SIZE = 10;
     private final String DEFAULT_IMAGE_PATH = ImagePath.GREEN_APPLE.getPath();
-
     private int size = DEFAULT_SIZE;
-    private Point coordinates = new Point();
+    private Point coordinates;
     private ImageIcon icon;
     private int score;
     private int chance = 0;
@@ -31,26 +31,33 @@ public class Apple implements GameElement {
 
     @Override
     public void create() {
-
+        coordinates = getPoint();
+        create(coordinates);
     }
 
-    //TODO: Переделать
-    public boolean create(Point point, ArrayList<Point> restrictionList) {
-        if (point == null || point.getX() < 0 || restrictionList == null) {
-            return false;
+    private Point getPoint() {
+        int maxX = Restrictions.GAME_FIELD_WIDTH;
+        int maxY = Restrictions.GAME_FIELD_HEIGHT;
+        Point point;
+        do {
+            point = Utils.getRandomPoint(maxX, maxY);
+        } while (Restrictions.contains(point));
+        return point;
+    }
+
+    public void create(Point point) {
+        if (point == null) {
+            return;
         }
-        while (true) {
-            coordinates.setLocation(Utils.getRandomInt(point.getX()), Utils.getRandomInt(point.getY()));
-            if (!restrictionList.contains(coordinates)) {
-                break;
-            }
+        if (coordinates == null) {
+            coordinates = point;
         }
         isExist = true;
-        return true;
     }
 
     public void remove() {
         isExist = false;
+        Restrictions.dropApplePoint(coordinates);
         coordinates.setLocation(-3, 0);
     }
 

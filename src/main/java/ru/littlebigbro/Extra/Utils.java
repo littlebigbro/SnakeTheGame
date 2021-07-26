@@ -9,6 +9,8 @@ public class Utils {
     }
 
     public static Point getRandomPoint(int maxX, int maxY) {
-        return new Point(getRandomInt(maxX), getRandomInt(maxY));
+        int x = getRandomInt(maxX / 10) * 10;
+        int y = getRandomInt(maxY / 10) * 10;
+        return new Point(x, y);
     }
 }

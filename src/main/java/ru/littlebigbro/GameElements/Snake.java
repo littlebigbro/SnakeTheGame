@@ -15,7 +15,12 @@ public class Snake implements GameElement {
     private static final String DEFAULT_BODY_IMAGE_PATH = ImagePath.SNAKE_BODY.getPath();
     private static final int DEFAULT_SEGMENT_SIZE = 10;
     private static final int DEFAULT_SNAKE_SIZE = 3;
-    private String snakeDirection = MovementDirection.NO_DIRECTION.getDirection();
+    private static final String UP = MovementDirection.UP.getDirection();
+    private static final String DOWN = MovementDirection.DOWN.getDirection();
+    private static final String LEFT = MovementDirection.LEFT.getDirection();
+    private static final String RIGHT = MovementDirection.RIGHT.getDirection();
+    private static final String STOP = MovementDirection.NO_DIRECTION.getDirection();
+    private String snakeDirection;
     private Point point;
     final private List<Point> points = new ArrayList<>();
     private int size;
@@ -30,6 +35,7 @@ public class Snake implements GameElement {
         setImage(DEFAULT_BODY_IMAGE_PATH);
         setSegmentSize(DEFAULT_SEGMENT_SIZE);
         setSize(DEFAULT_SNAKE_SIZE);
+        setDirection(LEFT);
     }
 
     private void setSegmentSize(int segmentSize) {
@@ -76,7 +82,7 @@ public class Snake implements GameElement {
     }
 
     public void setSize(int size) {
-        boolean result = checkSize(size);
+       // boolean result = checkSize(size);
         /*
          * Если переданное больше текущего, то увеличиваем.
          * Если переданное меньше текущего, то проверяем разницу между значениями(дельта)
@@ -126,19 +132,19 @@ public class Snake implements GameElement {
 
     public void move() {
         for (int i = size - 1; i > 0; i--) {
-            points.get(i).move((int) points.get(i - 1).getX(), (int) points.get(i - 1).getY());
+            points.get(i).move(points.get(i - 1).getX(), points.get(i - 1).getY());
 
         }
-        if (snakeDirection.equals("left")) {
+        if (snakeDirection.equals(LEFT)) {
             points.get(0).translate(-segmentSize, 0);
         }
-        if (snakeDirection.equals("right")) {
+        if (snakeDirection.equals(RIGHT)) {
             points.get(0).translate(segmentSize, 0);
         }
-        if (snakeDirection.equals("up")) {
+        if (snakeDirection.equals(UP)) {
             points.get(0).translate(0, -segmentSize);
         }
-        if (snakeDirection.equals("down")) {
+        if (snakeDirection.equals(DOWN)) {
             points.get(0).translate(0, segmentSize);
         }
         moved = true;
