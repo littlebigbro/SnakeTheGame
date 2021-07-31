@@ -79,7 +79,7 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    void textOfPauseButton() {
+    static void textOfPauseButton() {
         if (pauseButton.getText().equals("Pause") && newGame.isPaused()) {
             pauseButton.setText("Continue");
         } else {
@@ -96,12 +96,12 @@ public class GUI {
         }
     }
 
-//    class scoreListener implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            scoreLabel.setText(String.valueOf(newGame.getScore()));
-//            textOfPauseButton();
-//        }
-//    }
+    static class ScoreListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            scoreLabel.setText(String.valueOf(newGame.getScore()));
+            textOfPauseButton();
+        }
+    }
 
     static class NewGameListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -111,8 +111,8 @@ public class GUI {
             newGame.requestFocus();
             pauseButton.setVisible(true);
             restartButton.setVisible(true);
-//            Timer timer = new Timer(newGame.getTimerDelay(), new scoreListener());
-//            timer.start();
+            Timer timer = new Timer(newGame.getTimerDelay(), new ScoreListener());
+            timer.start();
             scoreLabel.setVisible(true);
             scoreTextLabel.setVisible(true);
         }

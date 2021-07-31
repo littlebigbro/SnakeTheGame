@@ -20,30 +20,77 @@ public class Snake implements GameElement {
     private static final String LEFT = MovementDirection.LEFT.getDirection();
     private static final String RIGHT = MovementDirection.RIGHT.getDirection();
     private static final String STOP = MovementDirection.NO_DIRECTION.getDirection();
-    private String snakeDirection;
-    private Point point;
+    private String direction;
     final private List<Point> points = new ArrayList<>();
-    private int size;
+    //Глобальный размер змейки, изменяется из вне
+    private int size = DEFAULT_SNAKE_SIZE;
     private boolean moved;
     private ImageIcon icon;
     private ImageIcon headIcon;
-    private int segmentSize;
 
     @Override
     public void create() {
         setHeadImage(DEFAULT_HEAD_IMAGE_PATH);
         setImage(DEFAULT_BODY_IMAGE_PATH);
-        setSegmentSize(DEFAULT_SEGMENT_SIZE);
-        setSize(DEFAULT_SNAKE_SIZE);
-        setDirection(LEFT);
+        setDirection(RIGHT);
+        draw();
     }
 
-    private void setSegmentSize(int segmentSize) {
-        this.segmentSize = segmentSize;
+    private void draw() {
+        for (int i = 0; i < size; i++) {
+            Point point = new Point();
+            point.setLocation(40 - i * DEFAULT_SEGMENT_SIZE, 30);
+            points.add(i, point);
+        }
     }
 
-    public int getSegmentSize() {
-        return segmentSize;
+    public void move() {
+        checkSize();
+        //Двигаем тело вперед
+        Point nextPoint;
+        for (int i = points.size() - 1; i > 0; i--) {
+            nextPoint = points.get(i - 1);
+            points.get(i).move(nextPoint.getX(), nextPoint.getY());
+        }
+        int dX = 0;
+        int dY = 0;
+        if (direction.equals(LEFT)) {
+            dX = -1;
+        }
+        if (direction.equals(RIGHT)) {
+            dX = 1;
+        }
+        if (direction.equals(UP)) {
+            dY = -1;
+        }
+        if (direction.equals(DOWN)) {
+            dY = 1;
+        }
+        //Двигаем голову
+        points.get(0).translate(dX * DEFAULT_SEGMENT_SIZE, dY * DEFAULT_SEGMENT_SIZE);
+        moved = true;
+    }
+
+    private void checkSize() {
+        if (points.size() < this.size) {
+            addBodySegment();
+        }
+        if (points.size() > this.size) {
+            removeSegments();
+        }
+    }
+
+    private void addBodySegment() {
+        int lastPointIndex = points.size() - 1;
+        int nextPointIndex = points.size();
+        Point lastPoint = points.get(lastPointIndex);
+        points.add(nextPointIndex, lastPoint);
+    }
+
+    private void removeSegments() {
+        int fromIndex = points.size() - 1;
+        int toIndex = this.size - 1;
+        points.subList(fromIndex, toIndex).clear();
     }
 
     private void setHeadImage(String pathToImage) {
@@ -64,7 +111,7 @@ public class Snake implements GameElement {
     }
 
     /**
-     * @param pathToImage Sets body image using path to image in the repo
+     * @param pathToImage Sets body image using path to image in the repository
      */
     @Override
     public void setImage(String pathToImage) {
@@ -82,35 +129,18 @@ public class Snake implements GameElement {
     }
 
     public void setSize(int size) {
-       // boolean result = checkSize(size);
-        /*
-         * Если переданное больше текущего, то увеличиваем.
-         * Если переданное меньше текущего, то проверяем разницу между значениями(дельта)
-         * Если дельта меньше стандартного значения то используем стандартное,
-         * Если больше то и используем переданное(обрезаем)
-         * */
+        if (size < DEFAULT_SNAKE_SIZE) {
+            size = DEFAULT_SNAKE_SIZE;
+        }
         this.size = size;
     }
 
-    private boolean checkSize(int size) {
-        if (size > this.size) {
-            for (int i = this.size - 1; i < size; i++) {
-                point = new Point();
-                point.setLocation(points.get(i));
-                points.add(i, point);
-            }
-        } else {
-            points.subList(size, this.size).clear();
-        }
-        return false;
-    }
-
     public String getDirection() {
-        return snakeDirection;
+        return direction;
     }
 
     public void setDirection(String direction) {
-        snakeDirection = direction;
+        this.direction = direction;
     }
 
     public int getPointX(int pointIndex) {
@@ -120,36 +150,6 @@ public class Snake implements GameElement {
     public int getPointY(int pointIndex) {
         return points.get(pointIndex).getY();
     }
-
-
-    public void draw() {
-        for (int i = 0; i < size; i++) {
-            point = new Point();
-            point.setLocation(40 - i * segmentSize, 30);
-            points.add(i, point);
-        }
-    }
-
-    public void move() {
-        for (int i = size - 1; i > 0; i--) {
-            points.get(i).move(points.get(i - 1).getX(), points.get(i - 1).getY());
-
-        }
-        if (snakeDirection.equals(LEFT)) {
-            points.get(0).translate(-segmentSize, 0);
-        }
-        if (snakeDirection.equals(RIGHT)) {
-            points.get(0).translate(segmentSize, 0);
-        }
-        if (snakeDirection.equals(UP)) {
-            points.get(0).translate(0, -segmentSize);
-        }
-        if (snakeDirection.equals(DOWN)) {
-            points.get(0).translate(0, segmentSize);
-        }
-        moved = true;
-    }
-
 
     public void setMoved(boolean isMoved) {
         moved = isMoved;

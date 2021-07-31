@@ -4,7 +4,7 @@ import main.java.ru.littlebigbro.Engines.GraphicEngine;
 import main.java.ru.littlebigbro.Enums.ImagePath;
 import main.java.ru.littlebigbro.Enums.MovementDirection;
 import main.java.ru.littlebigbro.Extra.Point;
-import main.java.ru.littlebigbro.Extra.Utils;
+import main.java.ru.littlebigbro.Extra.Restrictions;
 import main.java.ru.littlebigbro.GameElements.Apple;
 import main.java.ru.littlebigbro.GameElements.Snake;
 
@@ -17,7 +17,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements ActionListener {
-    private static final int FIELD_SIZE_IN_PIXELS = 300;
+    private static final int FIELD_SIZE_IN_PIXELS = Restrictions.GAME_FIELD_HEIGHT;
     private static final int SEGMENT_SIZE_IN_PIXELS = 10;
     private static final int SEGMENTS_COUNT = FIELD_SIZE_IN_PIXELS / SEGMENT_SIZE_IN_PIXELS;
     private static final String RIGHT = MovementDirection.RIGHT.getDirection();
@@ -94,8 +94,6 @@ public class GamePanel extends JPanel implements ActionListener {
     private void loadGameObjects() {
         snake = new Snake();
         snake.create();
-        snake.setDirection(currentDirection);
-        snake.draw();
 
         greenApple = new Apple(ImagePath.GREEN_APPLE.getPath(), 10, 50);
         greenApple.create();
@@ -239,7 +237,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     protected void paintComponent(Graphics g) {
         GraphicEngine graphicEngine = new GraphicEngine(g, this);
-        //super.paintComponent(g);
         graphicEngine.drawFieldWithCells(ImagePath.FIELD_CELL.getPath(), FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS);
         if (inGame) {
             if (snake.getDirection().equals(STOP)) {
@@ -282,8 +279,8 @@ public class GamePanel extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       /* if (!snake.getDirection().equals(STOP)) {
-          //  snake.move();
+        if (!snake.getDirection().equals(STOP)) {
+            snake.move();
             snakeHeadX = snake.getPointX(0);
             snakeHeadY = snake.getPointY(0);
             checkApple();
@@ -308,8 +305,8 @@ public class GamePanel extends JPanel implements ActionListener {
             if (snake.getSize() >= 38 || gameScore >= 1200) {
                 timer.setDelay((int) (delay * 0.125));//50
             }
-            checkCollisions();
-        }*/
+         //   checkCollisions();
+        }
         repaint();
     }
 
