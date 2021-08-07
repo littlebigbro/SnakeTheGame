@@ -79,7 +79,7 @@ public class Snake implements GameElement {
             removeSegments();
         }
     }
-
+//TODO: Некорректное добавление сегмента. Переделать
     private void addBodySegment() {
         int lastPointIndex = points.size() - 1;
         int nextPointIndex = points.size();

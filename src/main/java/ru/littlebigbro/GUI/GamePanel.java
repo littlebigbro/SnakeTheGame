@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class GamePanel extends JPanel implements ActionListener {
@@ -52,7 +51,8 @@ public class GamePanel extends JPanel implements ActionListener {
         loadGameObjects();
         timer = new Timer(delay, this);
         timer.start();
-        addKeyListener(new FieldKeyListener());
+        KeyAdapter keyListener = new FieldKeyListener(snake, gamePaused);
+        addKeyListener(keyListener);
         requestFocus();
     }
 
@@ -78,7 +78,7 @@ public class GamePanel extends JPanel implements ActionListener {
         timer = new Timer(delay, this);
         timer.start();
         gameScore = 0;
-        addKeyListener(new FieldKeyListener());
+        addKeyListener(new FieldKeyListener(snake, gamePaused));
         requestFocus();
         setFocusable(true);
     }
@@ -143,24 +143,26 @@ public class GamePanel extends JPanel implements ActionListener {
         return chance;
     }
 
-//    private int calculateAppleTimeOfExistance(Snake snake, Apple apple, int factor){
-//        int dX = Math.abs(snake.getPointX(0) - apple.getCoordinates().getX());
-//        int dY = Math.abs(snake.getPointY(0) - apple.getCoordinates().getY());
-//        return factor * ( dX + dY) / 10;
-//    }
+    private int calculateAppleTimeOfExistance(Snake snake, Apple apple, int factor) {
+        Point applePoint = apple.getCoordinates().get(0);
+        int dX = Math.abs(snake.getPointX(0) - applePoint.getX());
+        int dY = Math.abs(snake.getPointY(0) - applePoint.getY());
+        return factor * (dX + dY) / 10;
+    }
 
     private void checkApple() {
         double snakeSize = snake.getSize();
-//        if (snakeHeadX == greenApple.getX() && snakeHeadY == greenApple.getY()){
-//            snakeSize++;
-//            snake.setSnakeSize((int)snakeSize);
-//            gameScore += greenApple.getScore();
-//            greenApple.remove();
-//            greenApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
-//        }
-//        if (steps % 5 == 0 && steps != 0 && snake.getSnakeSize() > 4) {
+        Point greenApplePoint = greenApple.getCoordinates().get(0);
+        if (snakeHeadX == greenApplePoint.getX() && snakeHeadY == greenApplePoint.getY()) {
+            snakeSize++;
+            snake.setSize((int) snakeSize);
+            gameScore += greenApple.getScore();
+            greenApple.remove();
+            greenApple.create();
+        }
+//        if (steps % 5 == 0 && steps != 0 && snake.getSize() > 4) {
 //            GameCube.shot(setChanceCompareSnakeSize(redApple));
-//            if (snake.getSnakeSize() % 2 == 0 && !redApple.isExist()) {
+//            if (snake.getSize() % 2 == 0 && !redApple.isExist()) {
 //                if (redCube.shot() > 4) {
 //                    redApple.create(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS, snake.getPoints());
 //                    redApple.setTimeOfExist(calculateAppleTimeOfExistance(snake, redApple, 3)); // задаю время существования
@@ -189,14 +191,14 @@ public class GamePanel extends JPanel implements ActionListener {
 //            if (snakeSize / 2 >= 3){
 //                snakeSize = snakeSize/2;
 //            }
-//            snake.setSnakeSize((int) Math.ceil(snakeSize));
+//            snake.setSize((int) Math.ceil(snakeSize));
 //            gameScore += redApple.getDeafaultScore();
 //            redApple.setTimeOfExist(0);
 //            redApple.delete();
 //        }
 //        if (snakeHeadX == yellowApple.getX() && snakeHeadY == yellowApple.getY()){
 //            snakeSize = snakeSize * 2;
-//            snake.setSnakeSize((int)snakeSize);
+//            snake.setSize((int)snakeSize);
 //            gameScore += yellowApple.getDeafaultScore();
 //            yellowApple.delete();
 //        }
@@ -222,7 +224,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void checkCollisions() {
-        for (int i = snake.getSize(); i > 0; i--) {
+        for (int i = snake.getSize() - 1; i > 0; i--) {
             if (i > 2 && snakeHeadX == snake.getPointX(i - 1) && snakeHeadY == snake.getPointY(i - 1)) {
                 inGame = false;
             }
@@ -263,16 +265,6 @@ public class GamePanel extends JPanel implements ActionListener {
         }
     }
 
-    public void gamePause() {
-        if (gamePaused) {
-            snake.setDirection(currentDirection);
-            gamePaused = false;
-        } else {
-            snake.setDirection(STOP);
-            gamePaused = true;
-        }
-    }
-
     public boolean isPaused() {
         return gamePaused;
     }
@@ -284,57 +276,35 @@ public class GamePanel extends JPanel implements ActionListener {
             snakeHeadX = snake.getPointX(0);
             snakeHeadY = snake.getPointY(0);
             checkApple();
-            if ((snake.getSize() >= 8 && snake.getSize() < 13) || gameScore >= 100) {
-                timer.setDelay((int) (delay * 0.9)); //360
-            }
-            if (snake.getSize() >= 13 && snake.getSize() < 18 || gameScore >= 300) {
-                timer.setDelay((int) (delay * 0.7));//280
-            }
-            if (snake.getSize() >= 18 && snake.getSize() < 23 || gameScore >= 500) {
-                timer.setDelay((int) (delay * 0.5));//200
-            }
-            if (snake.getSize() >= 23 && snake.getSize() < 28 || gameScore >= 700) {
-                timer.setDelay((int) (delay * 0.4));//150
-            }
-            if (snake.getSize() >= 28 && snake.getSize() < 33 || gameScore >= 950) {
-                timer.setDelay((int) (delay * 0.25));//100
-            }
-            if (snake.getSize() >= 33 && snake.getSize() < 38 || gameScore >= 1000) {
-                timer.setDelay((int) (delay * 0.1875));//75
-            }
-            if (snake.getSize() >= 38 || gameScore >= 1200) {
-                timer.setDelay((int) (delay * 0.125));//50
-            }
-         //   checkCollisions();
+            setTimerDelay(snake.getSize(), gameScore);
+            checkCollisions();
         }
         repaint();
     }
 
-    class FieldKeyListener extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (snake.getMoved() && !gamePaused) {
-                if (e.getKeyCode() == KeyEvent.VK_LEFT && !currentDirection.equals(RIGHT)) {
-                    snake.setDirection(LEFT);
-                    snake.setMoved(false);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT && !currentDirection.equals(LEFT)) {
-                    snake.setDirection(RIGHT);
-                    snake.setMoved(false);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_UP && !currentDirection.equals(DOWN)) {
-                    snake.setDirection(UP);
-                    snake.setMoved(false);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_DOWN && !currentDirection.equals(UP)) {
-                    snake.setDirection(DOWN);
-                    snake.setMoved(false);
-                }
-                currentDirection = snake.getDirection();
-            }
-            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                gamePause();
-            }
+    private void setTimerDelay(int snakeSize, int score) {
+        int newDelay = delay;
+        if ((snakeSize >= 8 && snakeSize < 13) || score >= 100) {
+            newDelay = (int) (delay * 0.9); //360
         }
+        if (snake.getSize() >= 13 && snake.getSize() < 18 || gameScore >= 300) {
+            newDelay = (int) (delay * 0.7); //280
+        }
+        if (snake.getSize() >= 18 && snake.getSize() < 23 || gameScore >= 500) {
+            newDelay = (int) (delay * 0.5); //200
+        }
+        if (snake.getSize() >= 23 && snake.getSize() < 28 || gameScore >= 700) {
+            newDelay = (int) (delay * 0.4); //150
+        }
+        if (snake.getSize() >= 28 && snake.getSize() < 33 || gameScore >= 950) {
+            newDelay = (int) (delay * 0.25); //100
+        }
+        if (snake.getSize() >= 33 && snake.getSize() < 38 || gameScore >= 1000) {
+            newDelay = (int) (delay * 0.1875); //75
+        }
+        if (snake.getSize() >= 38 || gameScore >= 1200) {
+            newDelay = (int) (delay * 0.125); //50
+        }
+        timer.setDelay(newDelay);
     }
 }
