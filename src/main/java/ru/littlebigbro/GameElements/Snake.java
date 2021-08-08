@@ -27,6 +27,8 @@ public class Snake implements GameElement {
     private boolean moved;
     private ImageIcon icon;
     private ImageIcon headIcon;
+    private int counter = 0;
+    private Point lastPoint = new Point();
 
     @Override
     public void create() {
@@ -79,12 +81,18 @@ public class Snake implements GameElement {
             removeSegments();
         }
     }
-//TODO: Некорректное добавление сегмента. Переделать
+
     private void addBodySegment() {
-        int lastPointIndex = points.size() - 1;
-        int nextPointIndex = points.size();
-        Point lastPoint = points.get(lastPointIndex);
-        points.add(nextPointIndex, lastPoint);
+        counter++;
+        int pointsSize = points.size();
+        int lastPointIndex = pointsSize - 1;
+        if (counter == pointsSize) {
+            points.add(pointsSize, lastPoint);
+            counter = 0;
+            lastPoint = new Point();
+        } else if (counter == lastPointIndex) {
+            lastPoint.setLocation(points.get(lastPointIndex));
+        }
     }
 
     private void removeSegments() {
