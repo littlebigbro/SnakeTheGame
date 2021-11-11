@@ -152,11 +152,31 @@ public class Snake implements GameElement {
     }
 
     public int getPointX(int pointIndex) {
-        return points.get(pointIndex).getX();
+        int pointX;
+        int snakeLength = this.size;
+        if (this.size > points.size()) {
+            snakeLength = points.size();
+        }
+        if (pointIndex >= snakeLength) {
+            pointX = points.get(snakeLength - 1).getX();
+        } else {
+            pointX = points.get(pointIndex).getX();
+        }
+        return pointX;
     }
 
     public int getPointY(int pointIndex) {
-        return points.get(pointIndex).getY();
+        int pointY;
+        int snakeLength = this.size;
+        if (this.size > points.size()) {
+            snakeLength = points.size();
+        }
+        if (pointIndex >= snakeLength) {
+            pointY = points.get(snakeLength - 1).getY();
+        } else {
+            pointY = points.get(pointIndex).getY();
+        }
+        return pointY;
     }
 
     public void setMoved(boolean isMoved) {

@@ -224,7 +224,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void checkCollisions() {
-        for (int i = snake.getSize() - 1; i > 0; i--) {
+        for (int i = snake.getCoordinates().size() - 1; i > 0; i--) {
             if (i > 2 && snakeHeadX == snake.getPointX(i - 1) && snakeHeadY == snake.getPointY(i - 1)) {
                 inGame = false;
             }
