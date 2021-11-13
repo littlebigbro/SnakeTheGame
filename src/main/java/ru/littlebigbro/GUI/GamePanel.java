@@ -43,7 +43,7 @@ public class GamePanel extends JPanel implements ActionListener {
     private ArrayList<Point> gameFieldPointsList = new ArrayList<>();
     private int pointCounter = 0;
     private int steps = 0;
-
+//TODO: Убрать игровую логику и выполнять управления игрой через GameEngine.Start().Pause().Restart()
     public GamePanel() {
         gameScore = 0;
         setPreferredSize(new Dimension(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS));
@@ -151,6 +151,7 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void checkApple() {
+        //TODO: create apple not in snake :)
         double snakeSize = snake.getSize();
         Point greenApplePoint = greenApple.getCoordinates().get(0);
         if (snakeHeadX == greenApplePoint.getX() && snakeHeadY == greenApplePoint.getY()) {

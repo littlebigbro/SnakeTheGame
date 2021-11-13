@@ -8,6 +8,6 @@ public class GameEngine implements Engine {
     }
 
     public void init() {
-
+//TODO: Перенести управление игрой сюда из GamePanel
     }
 }

@@ -56,7 +56,7 @@ public class GUI {
 
         exitButton = new JButton("Exit");
         exitButton.setPreferredSize(new Dimension(90, 40));
-//        exitButton.addActionListener(new ExitListenerButton());
+        exitButton.addActionListener(new ExitListenerButton());
         menuPanel.add(exitButton, new GridBagConstraints(0, 2, 6, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         exitButton.setVisible(true);
 
@@ -89,10 +89,16 @@ public class GUI {
         }
     }
 
-    void ExitAction() {
+    static void ExitAction() {
+        if (!newGame.isPaused()) {
+            //TODO: Поставить паузу
+        }
         int resDlg = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
         if (resDlg == JOptionPane.YES_OPTION) {
             System.exit(0);
+        }
+        if (resDlg == JOptionPane.NO_OPTION) {
+            //TODO: Убрать паузу
         }
     }
 
@@ -117,14 +123,14 @@ public class GUI {
             scoreTextLabel.setVisible(true);
         }
     }
-//
-//    static class RestartListener implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            newGame.restart();
-//            newGame.requestFocus();
-//        }
-//    }
-//
+
+    static class RestartListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            newGame.restart();
+            newGame.requestFocus();
+        }
+    }
+
 //    static class PauseListener implements ActionListener {
 //        public void actionPerformed(ActionEvent e) {
 //            textOfPauseButton();
@@ -150,13 +156,13 @@ public class GUI {
 //            JOptionPane.showMessageDialog(null, rulesText, TITLE_message, JOptionPane.INFORMATION_MESSAGE);
 //        }
 //    }
-//
-//    static class ExitListenerButton implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            ExitAction();
-//        }
-//    }
-//
+
+    static class ExitListenerButton implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            ExitAction();
+        }
+    }
+
 //    static class ExitListener extends KeyAdapter {
 //        @Override
 //        public void keyTyped(KeyEvent e) { }
