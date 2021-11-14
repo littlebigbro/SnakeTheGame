@@ -17,6 +17,7 @@ public class GUI {
     static GamePanel newGame;
 
     public static void init() {
+        //TODO:
         JFrame frame = new JFrame("Snake");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(316, 450));
