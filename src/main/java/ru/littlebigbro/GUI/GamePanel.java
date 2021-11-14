@@ -308,4 +308,7 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         timer.setDelay(newDelay);
     }
+
+    public void pause() {
+    }
 }

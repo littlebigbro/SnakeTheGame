@@ -1,5 +1,7 @@
 package main.java.ru.littlebigbro.GUI;
 
+import main.java.ru.littlebigbro.GUI.Buttons.NewGameButton;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,7 +19,7 @@ public class GUI {
     static GamePanel newGame;
 
     public static void init() {
-        //TODO:
+        //TODO: Кнопки в отдельные классы
         JFrame frame = new JFrame("Snake");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(316, 450));
@@ -30,34 +32,31 @@ public class GUI {
         menuPanel.setPreferredSize(new Dimension(300, 100));
         menuPanel.setLayout(new GridBagLayout());
 
-        newGameButton = new JButton("New Game");
-        newGameButton.setPreferredSize(new Dimension(90, 40));
-        newGameButton.addActionListener(new NewGameListener());
+        newGameButton = new NewGameButton();
         menuPanel.add(newGameButton, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        newGameButton.setVisible(true);
 
         pauseButton = new JButton("Pause");
         pauseButton.setPreferredSize(new Dimension(90, 40));
-//        pauseButton.addActionListener(new PauseListener());
+        pauseButton.addActionListener(new PauseListener());
         menuPanel.add(pauseButton, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         pauseButton.setVisible(false);
 
         restartButton = new JButton("Restart");
         restartButton.setPreferredSize(new Dimension(90, 40));
-//        restartButton.addActionListener(new RestartListener());
+        restartButton.addActionListener(new RestartListener());
         menuPanel.add(restartButton, new GridBagConstraints(2, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         restartButton.setVisible(false);
 
 
         rulesButton = new JButton("Rules");
         rulesButton.setPreferredSize(new Dimension(90, 40));
-//        rulesButton.addActionListener(new RulesListener());
+        rulesButton.addActionListener(new RulesListener());
         menuPanel.add(rulesButton, new GridBagConstraints(4, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         rulesButton.setVisible(true);
 
         exitButton = new JButton("Exit");
         exitButton.setPreferredSize(new Dimension(90, 40));
-        exitButton.addActionListener(new ExitListenerButton());
+        exitButton.addActionListener(new ExitActionListener());
         menuPanel.add(exitButton, new GridBagConstraints(0, 2, 6, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         exitButton.setVisible(true);
 
@@ -72,7 +71,7 @@ public class GUI {
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
         frame.add(gamePanel);
         frame.add(menuPanel);
-//        frame.addKeyListener(new ExitListener());
+        frame.addKeyListener(new ExitActionListener());
         frame.setFocusable(true);
         frame.pack();
 
@@ -90,8 +89,8 @@ public class GUI {
         }
     }
 
-    static void ExitAction() {
-        if (!newGame.isPaused()) {
+    static void exitAction() {
+        if (newGame != null && !newGame.isPaused()) {
             //TODO: Поставить паузу
         }
         int resDlg = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
@@ -103,25 +102,22 @@ public class GUI {
         }
     }
 
+    public static void startNewGame() {
+        newGame = new GamePanel();
+        gamePanel.add(newGame);
+        newGame.requestFocus();
+        pauseButton.setVisible(true);
+        restartButton.setVisible(true);
+        Timer timer = new Timer(newGame.getTimerDelay(), new ScoreListener());
+        timer.start();
+        scoreLabel.setVisible(true);
+        scoreTextLabel.setVisible(true);
+    }
+
     static class ScoreListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             scoreLabel.setText(String.valueOf(newGame.getScore()));
             textOfPauseButton();
-        }
-    }
-
-    static class NewGameListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            newGameButton.setVisible(false);
-            newGame = new GamePanel();
-            gamePanel.add(newGame);
-            newGame.requestFocus();
-            pauseButton.setVisible(true);
-            restartButton.setVisible(true);
-            Timer timer = new Timer(newGame.getTimerDelay(), new ScoreListener());
-            timer.start();
-            scoreLabel.setVisible(true);
-            scoreTextLabel.setVisible(true);
         }
     }
 
@@ -132,49 +128,29 @@ public class GUI {
         }
     }
 
-//    static class PauseListener implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            textOfPauseButton();
-//            newGame.gamePause();
-//            newGame.requestFocus();
-//        }
-//    }
-//
-//    static class RulesListener implements ActionListener {
-//        public void actionPerformed(ActionEvent e) {
-//            if (!newGameButton.isVisible()) {
-//                textOfPauseButton();
-//                newGame.gamePause();
-//            }
-//            String TITLE_message = "Rules";
-//            String[] rulesText = new String[]{
-//                    "Rules:",
-//                    "1) Eat green apple and you gain 10 points;",
-//                    "2) Eat red apple and you gain 100 points;",
-//                    "3) Eat yellow apple and you lose 50 points;",
-//                    "4) DO NOT hit walls or yourself!!!"
-//            };
-//            JOptionPane.showMessageDialog(null, rulesText, TITLE_message, JOptionPane.INFORMATION_MESSAGE);
-//        }
-//    }
-
-    static class ExitListenerButton implements ActionListener {
+    static class PauseListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            ExitAction();
+            textOfPauseButton();
+            newGame.pause();
+            newGame.requestFocus();
         }
     }
 
-//    static class ExitListener extends KeyAdapter {
-//        @Override
-//        public void keyTyped(KeyEvent e) { }
-//
-//        public void keyPressed(KeyEvent e) {
-//            if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-//                ExitAction();
-//            }
-//        }
-//
-//        @Override
-//        public void keyReleased(KeyEvent e) { }
-//    }
+    static class RulesListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            if (!newGameButton.isVisible()) {
+                textOfPauseButton();
+                newGame.pause();
+            }
+            String TITLE_message = "Rules";
+            String[] rulesText = new String[]{
+                    "Rules:",
+                    "1) Eat green apple and you gain 10 points;",
+                    "2) Eat red apple and you gain 100 points;",
+                    "3) Eat yellow apple and you lose 50 points;",
+                    "4) DO NOT hit walls or yourself!!!"
+            };
+            JOptionPane.showMessageDialog(null, rulesText, TITLE_message, JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
 }
