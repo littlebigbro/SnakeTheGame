@@ -8,7 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class RulesButton extends JButton {
+
     private static final String RULES = "Rules";
+
     public RulesButton() {
         setText(RULES);
         setPreferredSize(new Dimension(90, 40));

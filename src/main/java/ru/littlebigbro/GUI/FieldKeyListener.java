@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class FieldKeyListener extends KeyAdapter {
+
     private static final String RIGHT = MovementDirection.RIGHT.getDirection();
     private static final String LEFT = MovementDirection.LEFT.getDirection();
     private static final String UP = MovementDirection.UP.getDirection();
@@ -14,7 +15,7 @@ public class FieldKeyListener extends KeyAdapter {
     private static final String STOP = MovementDirection.NO_DIRECTION.getDirection();
 
     private boolean gamePaused;
-    private Snake snake;
+    private final Snake snake;
     private String currentDirection;
 
 
@@ -23,6 +24,7 @@ public class FieldKeyListener extends KeyAdapter {
         this.gamePaused = gamePaused;
         currentDirection = snake.getDirection();
     }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();

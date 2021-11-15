@@ -5,7 +5,6 @@ import main.java.ru.littlebigbro.Enums.ImagePath;
 import main.java.ru.littlebigbro.Enums.MovementDirection;
 import main.java.ru.littlebigbro.Extra.Point;
 import main.java.ru.littlebigbro.Extra.Restrictions;
-import main.java.ru.littlebigbro.GUI.Buttons.PauseButton;
 import main.java.ru.littlebigbro.GameElements.Apple;
 import main.java.ru.littlebigbro.GameElements.Snake;
 
@@ -44,7 +43,8 @@ public class GamePanel extends JPanel implements ActionListener {
     private ArrayList<Point> gameFieldPointsList = new ArrayList<>();
     private int pointCounter = 0;
     private int steps = 0;
-//TODO: Убрать игровую логику и выполнять управления игрой через GameEngine.Start().Pause().Restart()
+
+    //TODO: Убрать игровую логику и выполнять управления игрой через GameEngine.Start().Pause().Restart()
     public GamePanel() {
         gameScore = 0;
         setPreferredSize(new Dimension(FIELD_SIZE_IN_PIXELS, FIELD_SIZE_IN_PIXELS));
