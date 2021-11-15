@@ -5,6 +5,7 @@ import main.java.ru.littlebigbro.Enums.ImagePath;
 import main.java.ru.littlebigbro.Enums.MovementDirection;
 import main.java.ru.littlebigbro.Extra.Point;
 import main.java.ru.littlebigbro.Extra.Restrictions;
+import main.java.ru.littlebigbro.GUI.Buttons.PauseButton;
 import main.java.ru.littlebigbro.GameElements.Apple;
 import main.java.ru.littlebigbro.GameElements.Snake;
 

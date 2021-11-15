@@ -1,6 +1,6 @@
 package main.java.ru.littlebigbro.GUI;
 
-import main.java.ru.littlebigbro.GUI.Buttons.NewGameButton;
+import main.java.ru.littlebigbro.GUI.Buttons.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,19 +8,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class GUI {
-    static JButton newGameButton;
-    static JButton pauseButton;
-    static JButton restartButton;
-    static JButton rulesButton;
-    static JButton exitButton;
-    static JPanel gamePanel;
-    static JLabel scoreLabel;
-    static JLabel scoreTextLabel;
-    static GamePanel newGame;
+
+    private static final String SNAKE = "Snake";
+
+    private static NewGameButton newGameButton;
+    private static PauseButton pauseButton;
+    private static RestartButton restartButton;
+    private static RulesButton rulesButton;
+    private static ExitButton exitButton;
+    private static JPanel gamePanel;
+    private static JLabel scoreLabel;
+    private static JLabel scoreTextLabel;
+    private static GamePanel newGame;
 
     public static void init() {
-        //TODO: Кнопки в отдельные классы
-        JFrame frame = new JFrame("Snake");
+        JFrame frame = new JFrame(SNAKE);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(316, 450));
 
@@ -33,39 +35,34 @@ public class GUI {
         menuPanel.setLayout(new GridBagLayout());
 
         newGameButton = new NewGameButton();
-        menuPanel.add(newGameButton, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        menuPanel.add(newGameButton, newGameButton.getGridBagConstraints());
 
-        pauseButton = new JButton("Pause");
-        pauseButton.setPreferredSize(new Dimension(90, 40));
-        pauseButton.addActionListener(new PauseListener());
-        menuPanel.add(pauseButton, new GridBagConstraints(0, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        pauseButton.setVisible(false);
+        pauseButton = new PauseButton();
+        menuPanel.add(pauseButton, pauseButton.getGridBagConstraints());
 
-        restartButton = new JButton("Restart");
-        restartButton.setPreferredSize(new Dimension(90, 40));
-        restartButton.addActionListener(new RestartListener());
-        menuPanel.add(restartButton, new GridBagConstraints(2, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        restartButton.setVisible(false);
+        restartButton = new RestartButton();
+        menuPanel.add(restartButton, restartButton.getGridBagConstraints());
 
+        rulesButton = new RulesButton();
+        menuPanel.add(rulesButton, rulesButton.getGridBagConstraints());
 
-        rulesButton = new JButton("Rules");
-        rulesButton.setPreferredSize(new Dimension(90, 40));
-        rulesButton.addActionListener(new RulesListener());
-        menuPanel.add(rulesButton, new GridBagConstraints(4, 1, 2, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        rulesButton.setVisible(true);
-
-        exitButton = new JButton("Exit");
-        exitButton.setPreferredSize(new Dimension(90, 40));
-        exitButton.addActionListener(new ExitActionListener());
-        menuPanel.add(exitButton, new GridBagConstraints(0, 2, 6, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        exitButton.setVisible(true);
+        exitButton = new ExitButton();
+        menuPanel.add(exitButton, exitButton.getGridBagConstraints());
 
         scoreLabel = new JLabel("0");
-        menuPanel.add(scoreLabel, new GridBagConstraints(5, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        menuPanel.add(scoreLabel,
+                new GridBagConstraints(5, 0, 1, 1, 1, 1,
+                        GridBagConstraints.CENTER,
+                        GridBagConstraints.HORIZONTAL,
+                        new Insets(0, 0, 0, 0), 0, 0));
         scoreLabel.setVisible(false);
 
         scoreTextLabel = new JLabel("Score:", SwingConstants.RIGHT);
-        menuPanel.add(scoreTextLabel, new GridBagConstraints(4, 0, 1, 1, 1, 1, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        menuPanel.add(scoreTextLabel,
+                new GridBagConstraints(4, 0, 1, 1, 1, 1,
+                        GridBagConstraints.EAST,
+                        GridBagConstraints.HORIZONTAL,
+                        new Insets(0, 0, 0, 0), 0, 0));
         scoreTextLabel.setVisible(false);
 
         frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
@@ -79,30 +76,7 @@ public class GUI {
         frame.setVisible(true);
     }
 
-    static void textOfPauseButton() {
-        if (pauseButton.getText().equals("Pause") && newGame.isPaused()) {
-            pauseButton.setText("Continue");
-        } else {
-            if (pauseButton.getText().equals("Continue") && !newGame.isPaused()) {
-                pauseButton.setText("Pause");
-            }
-        }
-    }
-
-    static void exitAction() {
-        if (newGame != null && !newGame.isPaused()) {
-            //TODO: Поставить паузу
-        }
-        int resDlg = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
-        if (resDlg == JOptionPane.YES_OPTION) {
-            System.exit(0);
-        }
-        if (resDlg == JOptionPane.NO_OPTION) {
-            //TODO: Убрать паузу
-        }
-    }
-
-    public static void startNewGame() {
+    public static void startNewGameAction() {
         newGame = new GamePanel();
         gamePanel.add(newGame);
         newGame.requestFocus();
@@ -114,43 +88,33 @@ public class GUI {
         scoreTextLabel.setVisible(true);
     }
 
-    static class ScoreListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            scoreLabel.setText(String.valueOf(newGame.getScore()));
-            textOfPauseButton();
-        }
-    }
-
-    static class RestartListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            newGame.restart();
-            newGame.requestFocus();
-        }
-    }
-
-    static class PauseListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            textOfPauseButton();
+    public static void pauseAction() {
+        if (newGame != null && !newGame.isPaused()) {
+            pauseButton.changeTextOfPauseButton();
             newGame.pause();
             newGame.requestFocus();
         }
     }
 
-    static class RulesListener implements ActionListener {
+    public static void restartAction() {
+        newGame.restart();
+        newGame.requestFocus();
+    }
+
+    public static void exitAction() {
+        if (newGame != null && !newGame.isPaused()) {
+            pauseAction();
+        }
+        int resDlg = JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit", JOptionPane.YES_NO_OPTION);
+        if (resDlg == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
+    }
+
+    static class ScoreListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            if (!newGameButton.isVisible()) {
-                textOfPauseButton();
-                newGame.pause();
-            }
-            String TITLE_message = "Rules";
-            String[] rulesText = new String[]{
-                    "Rules:",
-                    "1) Eat green apple and you gain 10 points;",
-                    "2) Eat red apple and you gain 100 points;",
-                    "3) Eat yellow apple and you lose 50 points;",
-                    "4) DO NOT hit walls or yourself!!!"
-            };
-            JOptionPane.showMessageDialog(null, rulesText, TITLE_message, JOptionPane.INFORMATION_MESSAGE);
+            scoreLabel.setText(String.valueOf(newGame.getScore()));
+            pauseButton.changeTextOfPauseButton();
         }
     }
 }
