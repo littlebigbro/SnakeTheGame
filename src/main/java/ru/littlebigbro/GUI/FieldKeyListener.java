@@ -1,23 +1,16 @@
 package main.java.ru.littlebigbro.GUI;
 
-import main.java.ru.littlebigbro.Enums.MovementDirection;
 import main.java.ru.littlebigbro.GameElements.Snake;
+import main.java.ru.littlebigbro.Interfaces.GameConstants;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class FieldKeyListener extends KeyAdapter {
-
-    private static final String RIGHT = MovementDirection.RIGHT.getDirection();
-    private static final String LEFT = MovementDirection.LEFT.getDirection();
-    private static final String UP = MovementDirection.UP.getDirection();
-    private static final String DOWN = MovementDirection.DOWN.getDirection();
-    private static final String STOP = MovementDirection.NO_DIRECTION.getDirection();
+public class FieldKeyListener extends KeyAdapter implements GameConstants {
 
     private boolean gamePaused;
     private final Snake snake;
     private String currentDirection;
-
 
     public FieldKeyListener(Snake snake, Boolean gamePaused) {
         this.snake = snake;

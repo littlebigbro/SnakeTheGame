@@ -20,6 +20,7 @@ public class GUI {
     private static JLabel scoreLabel;
     private static JLabel scoreTextLabel;
     private static GamePanel newGame;
+    private static Timer timer;
 
     public static void init() {
         JFrame frame = new JFrame(SNAKE);
@@ -29,6 +30,9 @@ public class GUI {
         gamePanel = new JPanel();
         gamePanel.setPreferredSize(new Dimension(300, 300));
         gamePanel.setLayout(new BoxLayout(gamePanel, BoxLayout.Y_AXIS));
+
+        newGame = new GamePanel();
+        gamePanel.add(newGame);
 
         JPanel menuPanel = new JPanel();
         menuPanel.setPreferredSize(new Dimension(300, 100));
@@ -77,12 +81,11 @@ public class GUI {
     }
 
     public static void startNewGameAction() {
-        newGame = new GamePanel();
-        gamePanel.add(newGame);
+        newGame.start();
         newGame.requestFocus();
         pauseButton.setVisible(true);
         restartButton.setVisible(true);
-        Timer timer = new Timer(newGame.getTimerDelay(), new ScoreListener());
+        timer = new Timer(newGame.getTimerDelay(), new ScoreListener());
         timer.start();
         scoreLabel.setVisible(true);
         scoreTextLabel.setVisible(true);
@@ -97,8 +100,18 @@ public class GUI {
     }
 
     public static void restartAction() {
-        newGame.restart();
+        timer.stop();
+        gamePanel.remove(newGame);
+        newGame = new GamePanel();
+        gamePanel.add(newGame);
+        newGame.start();
         newGame.requestFocus();
+        pauseButton.setVisible(true);
+        restartButton.setVisible(true);
+
+        timer.start();
+        scoreLabel.setVisible(true);
+        scoreTextLabel.setVisible(true);
     }
 
     public static void exitAction() {

@@ -15,10 +15,10 @@ import java.util.Objects;
 public class Apple implements GameElement {
     public static final int DEFAULT_SIZE = 10;
     private final String DEFAULT_IMAGE_PATH = ImagePath.GREEN_APPLE.getPath();
-    private int size = DEFAULT_SIZE;
     private Point coordinates;
     private ImageIcon icon;
-    private int score;
+    private int size = DEFAULT_SIZE;
+    private int score = 10;
     private int chance = 0;
     private int stepsOfExist;
     private boolean isExist = false;

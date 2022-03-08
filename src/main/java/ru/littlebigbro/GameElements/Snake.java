@@ -3,6 +3,7 @@ package main.java.ru.littlebigbro.GameElements;
 import main.java.ru.littlebigbro.Enums.ImagePath;
 import main.java.ru.littlebigbro.Enums.MovementDirection;
 import main.java.ru.littlebigbro.Extra.Point;
+import main.java.ru.littlebigbro.Interfaces.GameConstants;
 import main.java.ru.littlebigbro.Interfaces.GameElement;
 
 import javax.swing.*;
@@ -10,16 +11,12 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Snake implements GameElement {
+public class Snake implements GameElement, GameConstants {
     private static final String DEFAULT_HEAD_IMAGE_PATH = ImagePath.SNAKE_HEAD.getPath();
     private static final String DEFAULT_BODY_IMAGE_PATH = ImagePath.SNAKE_BODY.getPath();
     private static final int DEFAULT_SEGMENT_SIZE = 10;
     private static final int DEFAULT_SNAKE_SIZE = 3;
-    private static final String UP = MovementDirection.UP.getDirection();
-    private static final String DOWN = MovementDirection.DOWN.getDirection();
-    private static final String LEFT = MovementDirection.LEFT.getDirection();
-    private static final String RIGHT = MovementDirection.RIGHT.getDirection();
-    private static final String STOP = MovementDirection.NO_DIRECTION.getDirection();
+
     private String direction;
     final private List<Point> points = new ArrayList<>();
     //Глобальный размер змейки, изменяется из вне
